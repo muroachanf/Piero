@@ -1,3 +1,7 @@
+/*
+set path=%path%;c:\mingw\bin\
+g++.exe  3.c -o 3  -static -Wno-write-strings -lws2_32
+*/
 #include <stdio.h>
 #include <winsock2.h>
 #include <windows.h>
@@ -157,12 +161,13 @@ void buffer2file(char*buffer,char*file){
 int main(int argc,char *argv[]){
   char buffer[20000];
   memset(buffer,0,sizeof(buffer));
-  char *url = "http://fanyi.youdao.com/openapi.do?keyfrom=badrobot&key=2138134139&type=data&doctype=json&version=1.1&q=you";
+  // char *url = "http://fanyi.youdao.com/openapi.do?keyfrom=badrobot&key=2138134139&type=data&doctype=json&version=1.1&q=you";
+  char *url ="http://badrobot.sinaapp.com/dict.php?word=word";
   int len = DownloadToBuffer(url,buffer,sizeof(buffer));  
   printf("len:%d\n", len);
   // 要打印中文，需要chcp 65001,并改字体为true type类型,比如 lucida console 
   // printf("%s",buffer);        
-  // ignore_header(buffer);  
+  ignore_header(buffer);  
   // special(buffer);
   buffer2file(buffer,"TheFile.txt");
   // printf(buffer);    
