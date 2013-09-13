@@ -82,6 +82,25 @@ int main(int argc,char *argv[]){
   char *url = "http://fanyi.youdao.com/openapi.do?keyfrom=badrobot&key=2138134139&type=data&doctype=json&version=1.1&q=scandal";
   DownloadToBuffer(url,buffer,sizeof(buffer));  
   // 要打印中文，需要chcp 65001,并改字体为true type类型,比如 lucida console 
+  // printf("%s",buffer);    
+  // ignore header
+  int i = 0;
+  int count = 0;
+  while(buffer[i]!='\0'){
+    if (buffer[i]=='\r' || buffer[i]=='\n')
+        count++;
+    else 
+        count=0;
+    // printf("%d\n", count);
+    if (count==4){
+      // printf(&buffer[i] );
+      break;
+    }    
+    i++;
+  }
+  strcpy(&buffer[0],&buffer[i])
   printf(buffer);    
   return 0;
 }
+
+//http://www.rohitab.com/discuss/topic/28719-downloading-a-file-winsock-http-c/
