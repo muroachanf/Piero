@@ -37,3 +37,19 @@ void loop(){
 	    DispatchMessage(&msg); 
 	  } 
 }
+
+HWND create_edit(LPCWSTR text,int x,int y,int w,int h,HWND hwnd,int id){
+  return CreateWindowW(L"EDIT", text, WS_CHILD | WS_VISIBLE | SS_LEFT,
+            x,y,w,h,hwnd, (HMENU) id, NULL, NULL);
+}
+
+HWND create_button(LPCWSTR text,int x,int y,int w,int h,HWND hwnd,int id){
+  return CreateWindowW(L"button", text, WS_CHILD | WS_VISIBLE | SS_LEFT,
+            x,y,w,h,hwnd, (HMENU) id, NULL, NULL);
+}
+
+HWND create_label(LPCWSTR text,int x,int y,int w,int h,HWND hwnd,int id){
+ 	return CreateWindowW(L"STATIC", text, WS_CHILD | WS_VISIBLE | SS_LEFT,
+            x,y,w,h,hwnd, (HMENU) id, NULL, NULL);
+}
+
