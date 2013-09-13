@@ -23,7 +23,7 @@ int create_class(HINSTANCE hInst,char* AppTitle,WNDPROC  WindowProc){
 int  create_win(HINSTANCE hInst,char* AppTitle,int nCmdShow){
 	HWND hwnd = CreateWindow(AppTitle,AppTitle, 
 	    WS_OVERLAPPEDWINDOW, 
-	    CW_USEDEFAULT,CW_USEDEFAULT,100,100, 
+	    CW_USEDEFAULT,CW_USEDEFAULT,100,300, 
 	    NULL,NULL,hInst,NULL); 
 	ShowWindow(hwnd,nCmdShow); 
 	UpdateWindow(hwnd); 
