@@ -31,25 +31,38 @@ SOCKET HTTPConnectToServer(char* server){
    
      return sck;
 }
-
+// void req(SOCKET s){
+//   char *message = "Accept:text/html,application/xhtml+xml,application/xml,application/json;q=0.9,*/*;q=0.8 \r\n\
+// Accept-Encoding:gzip,deflate,sdch \r\n\
+// Accept-Language:en-US,en;q=0.8    \r\n\
+// Cache-Control:max-age=0  \r\n\
+// Connection:keep-alive \r\n\
+// Host:fanyi.youdao.com \r\n\
+// User-Agent:Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.66 Safari/537.36\r\n\
+// GET / HTTP/1.1 \r\n\
+// ";
+//   char *a="GET /openapi.do?keyfrom=badrobot&key=2138134139&type=data&doctype=json&version=1.1&q=scandal HTTP/1.1 \r\n";
+//   send(s,message,strlen(message),0);
+// }
 void HTTPRequestPage(SOCKET s,char *page,char *host){
    unsigned int len;
    if(strlen(page)>strlen(host)){
     len=strlen(page);
    }else len = strlen(host);
-   
+   len = 1000;
    char message[20+len];
    if(strlen(page)<=0){
-    strcpy(message,"GET / HTTP/1.1\r\n");
-   }else sprintf(message,"GET %s HTTP/1.1\r\n",page);
+     strcpy(message,"GET / HTTP/1.1\r\n");
+   }else 
+     sprintf(message,"GET %s HTTP/1.1\r\n",page);
    send(s,message,strlen(message),0);
-   
    memset(message,0,sizeof(message));
    sprintf(message,"Host: %s\r\n\r\n",host);
    send(s,message,strlen(message),0);
+   // printf("%s\n",message );
 }
 
-BOOL DownloadToBuffer(char * webpage,char * buffer,unsigned long max){
+int DownloadToBuffer(char * webpage,char * buffer,unsigned long max){
    if(webpage==NULL||buffer==NULL||max==0) return FALSE;
    
    unsigned short shift=0;
@@ -68,22 +81,15 @@ BOOL DownloadToBuffer(char * webpage,char * buffer,unsigned long max){
    
    SOCKET s = HTTPConnectToServer(server);
    HTTPRequestPage(s,page,server);
-   
+   // req(s);
    int i = recv(s,buffer,max,0);
+   // printf(buffer); 
    closesocket(s);
-   
-   if(i<=0) return FALSE;
-   return TRUE;
+   return i ;
+   // if(i<=0) return FALSE;
+   // return TRUE;
 }
-
-int main(int argc,char *argv[]){
-  char buffer[2000];
-  memset(buffer,0,sizeof(buffer));
-  char *url = "http://fanyi.youdao.com/openapi.do?keyfrom=badrobot&key=2138134139&type=data&doctype=json&version=1.1&q=scandal";
-  DownloadToBuffer(url,buffer,sizeof(buffer));  
-  // 要打印中文，需要chcp 65001,并改字体为true type类型,比如 lucida console 
-  // printf("%s",buffer);    
-  // ignore header
+void ignore_header(char*buffer){
   int i = 0;
   int count = 0;
   while(buffer[i]!='\0'){
@@ -98,8 +104,68 @@ int main(int argc,char *argv[]){
     }    
     i++;
   }
-  strcpy(&buffer[0],&buffer[i])
-  printf(buffer);    
+  strcpy(&buffer[0],&buffer[i]);
+}
+
+void cut_first(int lines,char*buffer){
+  int i = 0;
+  int count = 0;
+  // cut first 2 line
+  while(buffer[i]!='\0'){
+    if (buffer[i]=='\r' || buffer[i]=='\n')
+        count++;
+    // printf("%d\n", count);
+    if (count==lines){
+      i++;
+      strcpy(&buffer[0],&buffer[i]);
+      break;
+    }    
+    i++;
+  }  
+}
+void cut_last(int lines,char*buffer){
+  int i = 0;
+  int count = 0;  
+  int len = strlen(buffer);
+  i = len -1;
+  count = 0 ;
+  // cut last 3 line
+  while(i>=0){
+    if (buffer[i]=='\r' || buffer[i]=='\n')
+        count++;
+    if (count==lines){
+      buffer[i] = '\0' ;
+      break;
+    }    
+    i--;
+  }
+}
+void special(char*buffer){  
+  cut_last(6,buffer); 
+  cut_first(3,buffer);
+}
+
+void buffer2file(char*buffer,char*file){
+  FILE *fp = fopen(file, "wb");
+  if(fp != NULL)
+  {
+      // fwrite(&buffer[0],strlen(buffer),1,fp);
+      fwrite(buffer,strlen(buffer),1,fp);
+      fclose(fp);
+  }
+}
+int main(int argc,char *argv[]){
+  char buffer[20000];
+  memset(buffer,0,sizeof(buffer));
+  char *url = "http://fanyi.youdao.com/openapi.do?keyfrom=badrobot&key=2138134139&type=data&doctype=json&version=1.1&q=you";
+  int len = DownloadToBuffer(url,buffer,sizeof(buffer));  
+  printf("len:%d\n", len);
+  // 要打印中文，需要chcp 65001,并改字体为true type类型,比如 lucida console 
+  // printf("%s",buffer);        
+  // ignore_header(buffer);  
+  // special(buffer);
+  buffer2file(buffer,"TheFile.txt");
+  // printf(buffer);    
   return 0;
 }
 
