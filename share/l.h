@@ -6,3 +6,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 HWND create_edit(LPCWSTR text,int x,int y,int w,int h,HWND hwnd,int id);
 HWND create_button(LPCWSTR text,int x,int y,int w,int h,HWND hwnd,int id);
 HWND create_label(LPCWSTR text,int x,int y,int w,int h,HWND hwnd,int id);
+
+//
+
+void get_badrobot(char *word,char*buffer,int size);

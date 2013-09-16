@@ -1,9 +1,11 @@
 
 /*
 set path=%path%;c:\mingw\bin\
-g++.exe -mwindows 2.c l.c -o 2  -static -Wno-write-strings
+set prompt=%
+g++.exe -mwindows 2.c share/l.c -o 2  -static -Wno-write-strings -lws2_32 -Ishare
 */
 #include <windows.h> 
+#include <wchar.h>
 #include "l.h"
 
 
@@ -24,27 +26,33 @@ void on_click(int id,HWND hwnd){
     if(id==id_query){
        HWND hwndEdit = GetDlgItem(hwnd,id_edit);
        int len = GetWindowTextLengthW(hwndEdit) + 1;         
-       wchar_t text[len];
-       GetWindowTextW(hwndEdit, text, len);
-       SetWindowTextW(hwnd, text);          
+       char text[len];
+       GetWindowText(hwndEdit, text, len);
+       char buffer[1000];
+       get_badrobot(text,buffer,sizeof(buffer));
+       // wchar_t ws[1000];
+       // swprintf (ws,L"%hs",buffer);
+       HWND hstatic = GetDlgItem(hwnd,id_static);
+       SetWindowText(hstatic, buffer);
     }else{
        PostQuitMessage(0);
     }
 }
 void on_paint(HWND hwnd){
-      PAINTSTRUCT ps; 
-      HDC dc; 
-      RECT r; 
-      GetClientRect(hwnd,&r); 
-      dc=BeginPaint(hwnd,&ps); 
-      DrawText(dc,"Hello",-1,&r,DT_SINGLELINE|DT_CENTER|DT_VCENTER); 
-      EndPaint(hwnd,&ps); 
+      // PAINTSTRUCT ps; 
+      // HDC dc; 
+      // RECT r; 
+      // GetClientRect(hwnd,&r); 
+      // dc=BeginPaint(hwnd,&ps); 
+      // DrawText(dc,"Hello",-1,&r,DT_SINGLELINE|DT_CENTER|DT_VCENTER); 
+      // EndPaint(hwnd,&ps); 
+      UpdateWindow(hwnd);
 }
 void on_create(HWND  hwnd){
-    create_label(L"word",20, 20, 100, 20,hwnd, id_static);
-    create_edit(L"单词...",20, 40, 100, 20,hwnd, id_edit);        
-    create_button(L"查询",20, 60, 80, 25,hwnd, id_query);
-    create_button(L"退出",20, 80, 80, 25,hwnd, id_quit);      
+    create_edit(L"cat",20, 20, 350, 40,hwnd, id_edit);        
+    create_label(L"---",20, 60, 350, 40,hwnd, id_static);
+    create_button(L"查询",20, 100, 350, 25,hwnd, id_query);
+    // create_button(L"退出",20, 80, 80, 25,hwnd, id_quit);      
 }
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) 
 { 

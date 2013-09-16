@@ -1,4 +1,5 @@
 /*
+set prompt=#
 set path=%path%;c:\mingw\bin\
 g++.exe  3.c -o 3  -static -Wno-write-strings -lws2_32
 */
@@ -158,20 +159,42 @@ void buffer2file(char*buffer,char*file){
       fclose(fp);
   }
 }
-int main(int argc,char *argv[]){
-  char buffer[20000];
+void get_badrobot(char *word,char*buffer,int size){
   memset(buffer,0,sizeof(buffer));
   // char *url = "http://fanyi.youdao.com/openapi.do?keyfrom=badrobot&key=2138134139&type=data&doctype=json&version=1.1&q=you";
-  char *url ="http://badrobot.sinaapp.com/dict.php?word=word";
-  int len = DownloadToBuffer(url,buffer,sizeof(buffer));  
-  printf("len:%d\n", len);
-  // 要打印中文，需要chcp 65001,并改字体为true type类型,比如 lucida console 
-  // printf("%s",buffer);        
+  char url[256];
+  // strcpy(url,"http://badrobot.sinaapp.com/dict.php?word=");
+  // strcat(url,word);  
+  snprintf(url, sizeof url, "%s%s", "http://badrobot.sinaapp.com/dict.php?word=", word);
+  int len = DownloadToBuffer(url,buffer,size);  
+  printf("len:%d\n", len);       
   ignore_header(buffer);  
-  // special(buffer);
+}
+int main(int argc,char *argv[]){
+  char buffer[20000];
+  get_badrobot("scandal",buffer,sizeof(buffer));  
   buffer2file(buffer,"TheFile.txt");
-  // printf(buffer);    
+  printf(buffer);    
   return 0;
 }
 
-//http://www.rohitab.com/discuss/topic/28719-downloading-a-file-winsock-http-c/
+// int main(int argc,char *argv[]){
+//   char buffer[20000];
+// memset(buffer,0,sizeof(buffer));
+//   // char *url = "http://fanyi.youdao.com/openapi.do?keyfrom=badrobot&key=2138134139&type=data&doctype=json&version=1.1&q=you";
+//   char *url ="http://badrobot.sinaapp.com/dict.php?word=word";
+//   int len = DownloadToBuffer(url,buffer,sizeof(buffer));  
+//   printf("len:%d\n", len);
+//   // 要打印中文，需要chcp 65001,并改字体为true type类型,比如 lucida console 
+//   // printf("%s",buffer);        
+//   ignore_header(buffer);  
+//   buffer2file(buffer,"TheFile.txt");
+//   printf(buffer);    
+//   return 0;
+// }
+
+//src from : http://www.rohitab.com/discuss/topic/28719-downloading-a-file-winsock-http-c/
+
+// for printf 
+// 要打印中文，需要chcp 65001,并改字体为true type类型,比如 lucida console 
+// printf("%s",buffer); 
