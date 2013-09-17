@@ -6,15 +6,16 @@ g++.exe -mwindows 2.c share/l.c -o 2  -static -Wno-write-strings -lws2_32 -Ishar
 */
 #include <windows.h> 
 #include <wchar.h>
+#include <stdio.h>
 #include "l.h"
 
-
+HWND g_hwnd ;
 int WinMain(HINSTANCE hInst,HINSTANCE,LPSTR,int nCmdShow) 
 {   
 	char *AppTitle="Dictionary"; 
 	if (0==create_class(hInst,AppTitle,WindowProc))
 		return 0;  
-	create_win(hInst,AppTitle,nCmdShow,CW_USEDEFAULT,CW_USEDEFAULT,400,200);	
+	g_hwnd = create_win(hInst,AppTitle,nCmdShow,CW_USEDEFAULT,CW_USEDEFAULT,400,200);	
 	loop(); 
 } 
 
@@ -22,14 +23,25 @@ const int id_edit = 5;
 const int id_query = 1;
 const int id_quit = 2;
 const int id_static = 3;
-void on_click(int id,HWND hwnd){      
-    if(id==id_query){
+
+
+void on_query(HWND hwnd){
+       // char temp[100] ;
+       // memset(temp,0,sizeof(temp));
+       // sprintf(temp, "%d", hwnd);
+       // MessageBox(NULL, "temp", NULL, MB_OK);
        HWND hwndEdit = GetDlgItem(hwnd,id_edit);
        int len = GetWindowTextLengthW(hwndEdit) + 1;         
        char text[len];
        GetWindowText(hwndEdit, text, len);
        char buffer[1000];
        int rlen = get_badrobot(text,buffer,sizeof(buffer));
+       // if('n' == buffer[0]) {
+       //    SetWindowText(g_hwnd,"is n'");
+       // }else
+       //    SetWindowText(g_hwnd,"'not n'");
+       // sprintf(buffer,"%d",buffer[0]);
+       // SetWindowText(g_hwnd,buffer);
        HWND hstatic = GetDlgItem(hwnd,id_static);
        if (rlen >0) {
          // wchar_t ws[1000];
@@ -41,7 +53,30 @@ void on_click(int id,HWND hwnd){
           else
             SetWindowTextW(hstatic, L"好刁钻的单词");
        }
+}
 
+WNDPROC DefEditProc ;
+LRESULT CALLBACK MyEditProc(HWND hDlg, UINT message,WPARAM wParam, LPARAM lParam) {
+  switch(message) {
+  case WM_CHAR:
+    if( wParam == VK_RETURN ) {
+        /* User pressed ENTER -- do what you want here. */
+        // PostQuitMessage(0);
+        on_query(g_hwnd);
+        return(0);
+    }
+    else 
+        return( (LRESULT)CallWindowProc((WNDPROC)DefEditProc,hDlg,message,wParam,lParam) );
+    break;
+  default:
+    return( (LRESULT)CallWindowProc((WNDPROC)DefEditProc,hDlg,message,wParam,lParam) );
+    break;
+  }
+  return(0);
+}
+void on_click(int id,HWND hwnd){      
+    if(id==id_query){
+       on_query(hwnd);
     }else{
        PostQuitMessage(0);
     }
@@ -57,9 +92,11 @@ void on_paint(HWND hwnd){
       UpdateWindow(hwnd);
 }
 void on_create(HWND  hwnd){
-    create_edit(L"cat",20, 20, 350, 40,hwnd, id_edit);        
-    create_label(L"---",20, 60, 350, 40,hwnd, id_static);
+    HWND EditWnd = create_edit(L"cat",20, 20, 350, 40,hwnd, id_edit);        
+    create_label(L"准备...",20, 60, 350, 40,hwnd, id_static);
     create_button(L"查询",20, 100, 350, 25,hwnd, id_query);
+    DefEditProc = (WNDPROC)GetWindowLong(EditWnd,GWL_WNDPROC);
+    SetWindowLong(EditWnd,GWL_WNDPROC,(long)MyEditProc);
     // create_button(L"退出",20, 80, 80, 25,hwnd, id_quit);      
 }
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) 

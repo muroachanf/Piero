@@ -20,7 +20,7 @@ int create_class(HINSTANCE hInst,char* AppTitle,WNDPROC  WindowProc){
 	if (!RegisterClass(&wc)) 
 		return 0 ;else return 1;
 }
-int  create_win(HINSTANCE hInst,char* AppTitle,int nCmdShow,int x,int y,int w,int h){
+HWND  create_win(HINSTANCE hInst,char* AppTitle,int nCmdShow,int x,int y,int w,int h){
 	HWND hwnd = CreateWindow(AppTitle,AppTitle, 
 	    WS_OVERLAPPEDWINDOW, 
 	    x,y,w,h,
@@ -29,7 +29,7 @@ int  create_win(HINSTANCE hInst,char* AppTitle,int nCmdShow,int x,int y,int w,in
 
 	ShowWindow(hwnd,nCmdShow); 
 	UpdateWindow(hwnd); 
-	return 1;
+	return hwnd;
 }
 void loop(){
 	  MSG msg; 
@@ -176,6 +176,7 @@ void ignore_header(char*buffer){
     // printf("%d\n", count);
     if (count==4){
       // printf(&buffer[i] );
+      i++;
       break;
     }    
     i++;
