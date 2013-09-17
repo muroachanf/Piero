@@ -2,7 +2,12 @@
 /*
 set path=%path%;c:\mingw\bin\
 set prompt=%
-g++.exe -mwindows 2.c share/l.c -o 2  -static -Wno-write-strings -lws2_32 -Ishare
+g++.exe -mwindows 2.c share/l.c -o 2  -static -Wno-write-strings -lws2_32 -lole32 -luuid -lShlwapi -Ishare
+
+#pragma comment(lib, "Shlwapi.lib")
+#pragma comment(lib, "Ole32.lib")
+#pragma comment(lib, "libole32.a")
+#pragma comment(lib, "uuid.lib")
 */
 #include <windows.h> 
 #include <wchar.h>
@@ -87,6 +92,8 @@ void on_paint(HWND hwnd){
       // EndPaint(hwnd,&ps); 
       UpdateWindow(hwnd);
 }
+
+
 void on_create(HWND  hwnd){
     HWND hwndedit = create_edit(L"cat",20, 20, 350, 40,hwnd, id_edit);        
     create_label(L"准备...",20, 60, 350, 40,hwnd, id_static);
@@ -94,6 +101,7 @@ void on_create(HWND  hwnd){
     DefEditProc = (WNDPROC)GetWindowLong(hwndedit,GWL_WNDPROC);
     SetWindowLong(hwndedit,GWL_WNDPROC,(long)MyEditProc);
     SetFocus(hwndedit);
+    create_link(TRUE);
     // create_button(L"退出",20, 80, 80, 25,hwnd, id_quit);      
 }
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) 
