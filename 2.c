@@ -14,7 +14,7 @@ int WinMain(HINSTANCE hInst,HINSTANCE,LPSTR,int nCmdShow)
 	char *AppTitle="Dictionary"; 
 	if (0==create_class(hInst,AppTitle,WindowProc))
 		return 0;  
-	create_win(hInst,AppTitle,nCmdShow);	
+	create_win(hInst,AppTitle,nCmdShow,CW_USEDEFAULT,CW_USEDEFAULT,400,200);	
 	loop(); 
 } 
 
@@ -29,11 +29,19 @@ void on_click(int id,HWND hwnd){
        char text[len];
        GetWindowText(hwndEdit, text, len);
        char buffer[1000];
-       get_badrobot(text,buffer,sizeof(buffer));
-       // wchar_t ws[1000];
-       // swprintf (ws,L"%hs",buffer);
+       int rlen = get_badrobot(text,buffer,sizeof(buffer));
        HWND hstatic = GetDlgItem(hwnd,id_static);
-       SetWindowText(hstatic, buffer);
+       if (rlen >0) {
+         // wchar_t ws[1000];
+         // swprintf (ws,L"%hs",buffer);         
+         SetWindowText(hstatic, buffer);
+       }else{
+          if(rlen ==-1)
+             SetWindowTextW(hstatic, L"要联网哦");
+          else
+            SetWindowTextW(hstatic, L"好刁钻的单词");
+       }
+
     }else{
        PostQuitMessage(0);
     }

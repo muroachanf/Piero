@@ -20,10 +20,10 @@ int create_class(HINSTANCE hInst,char* AppTitle,WNDPROC  WindowProc){
 	if (!RegisterClass(&wc)) 
 		return 0 ;else return 1;
 }
-int  create_win(HINSTANCE hInst,char* AppTitle,int nCmdShow){
+int  create_win(HINSTANCE hInst,char* AppTitle,int nCmdShow,int x,int y,int w,int h){
 	HWND hwnd = CreateWindow(AppTitle,AppTitle, 
 	    WS_OVERLAPPEDWINDOW, 
-	    CW_USEDEFAULT,CW_USEDEFAULT,400,200, 
+	    x,y,w,h,
 	    NULL,NULL,hInst,NULL); 
 	// ::SendMessage(hwnd, WM_SETFONT, (WPARAM)::GetStockObject(DEFAULT_GUI_FONT), MAKELPARAM(FALSE, 0));
 
@@ -152,9 +152,13 @@ int DownloadToBuffer(char * webpage,char * buffer,unsigned long max){
    char *page = strdup(webpage+shift+strlen(server));
    
    SOCKET s = HTTPConnectToServer(server);
+   if (!s)
+     return -1;// network error
    HTTPRequestPage(s,page,server);
    // req(s);
    int i = recv(s,buffer,max,0);
+   if (i==0)
+     return -2;// no word
    // printf(buffer); 
    closesocket(s);
    return i ;
@@ -226,14 +230,15 @@ void buffer2file(char*buffer,char*file){
       fclose(fp);
   }
 }
-void get_badrobot(char *word,char*buffer,int size){
-  memset(buffer,0,sizeof(buffer));
+int get_badrobot(char *word,char*buffer,int size){
+  memset(buffer,0,size);
   // char *url = "http://fanyi.youdao.com/openapi.do?keyfrom=badrobot&key=2138134139&type=data&doctype=json&version=1.1&q=you";
   char url[256];
   // strcpy(url,"http://badrobot.sinaapp.com/dict.php?word=");
   // strcat(url,word);  
   snprintf(url, sizeof url, "%s%s", "http://badrobot.sinaapp.com/dict.php?word=", word);
   int len = DownloadToBuffer(url,buffer,size);  
-  printf("len:%d\n", len);       
+  // printf("len:%d\n", len);       
   ignore_header(buffer);  
+  return len;
 }
