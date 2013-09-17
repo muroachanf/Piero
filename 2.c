@@ -15,7 +15,7 @@ int WinMain(HINSTANCE hInst,HINSTANCE,LPSTR,int nCmdShow)
 	char *AppTitle="Dictionary"; 
 	if (0==create_class(hInst,AppTitle,WindowProc))
 		return 0;  
-	g_hwnd = create_win(hInst,AppTitle,nCmdShow,CW_USEDEFAULT,CW_USEDEFAULT,400,200);	
+	g_hwnd = create_win(hInst,AppTitle,nCmdShow,CW_USEDEFAULT,CW_USEDEFAULT,400,180);	
 	loop(); 
 } 
 
@@ -30,29 +30,25 @@ void on_query(HWND hwnd){
        // memset(temp,0,sizeof(temp));
        // sprintf(temp, "%d", hwnd);
        // MessageBox(NULL, "temp", NULL, MB_OK);
-       HWND hwndEdit = GetDlgItem(hwnd,id_edit);
-       int len = GetWindowTextLengthW(hwndEdit) + 1;         
+       HWND hwndedit = GetDlgItem(hwnd,id_edit);
+       int len = GetWindowTextLengthW(hwndedit) + 1;         
        char text[len];
-       GetWindowText(hwndEdit, text, len);
+       GetWindowText(hwndedit, text, len);
        char buffer[1000];
        int rlen = get_badrobot(text,buffer,sizeof(buffer));
-       // if('n' == buffer[0]) {
-       //    SetWindowText(g_hwnd,"is n'");
-       // }else
-       //    SetWindowText(g_hwnd,"'not n'");
-       // sprintf(buffer,"%d",buffer[0]);
-       // SetWindowText(g_hwnd,buffer);
        HWND hstatic = GetDlgItem(hwnd,id_static);
        if (rlen >0) {
-         // wchar_t ws[1000];
-         // swprintf (ws,L"%hs",buffer);         
-         SetWindowText(hstatic, buffer);
-       }else{
+          // buffer encoding is gb2312 == instance of MBCS 
+          SetWindowText(hstatic, buffer);
+       }else{                    
+          wchar_t buffer[1000];
           if(rlen ==-1)
-             SetWindowTextW(hstatic, L"要联网哦");
+            wcscpy(buffer,L"要联网哦");// raw string is utf-8 ,because the source code file is utf-8 encoded file 
           else
-            SetWindowTextW(hstatic, L"好刁钻的单词");
+            wcscpy(buffer,L"好刁钻的单词");
+          SetWindowTextW(hstatic,buffer);
        }
+      SendMessage(hwndedit, EM_SETSEL, 0, -1);
 }
 
 WNDPROC DefEditProc ;
@@ -92,11 +88,12 @@ void on_paint(HWND hwnd){
       UpdateWindow(hwnd);
 }
 void on_create(HWND  hwnd){
-    HWND EditWnd = create_edit(L"cat",20, 20, 350, 40,hwnd, id_edit);        
+    HWND hwndedit = create_edit(L"cat",20, 20, 350, 40,hwnd, id_edit);        
     create_label(L"准备...",20, 60, 350, 40,hwnd, id_static);
     create_button(L"查询",20, 100, 350, 25,hwnd, id_query);
-    DefEditProc = (WNDPROC)GetWindowLong(EditWnd,GWL_WNDPROC);
-    SetWindowLong(EditWnd,GWL_WNDPROC,(long)MyEditProc);
+    DefEditProc = (WNDPROC)GetWindowLong(hwndedit,GWL_WNDPROC);
+    SetWindowLong(hwndedit,GWL_WNDPROC,(long)MyEditProc);
+    SetFocus(hwndedit);
     // create_button(L"退出",20, 80, 80, 25,hwnd, id_quit);      
 }
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) 

@@ -21,8 +21,10 @@ int create_class(HINSTANCE hInst,char* AppTitle,WNDPROC  WindowProc){
 		return 0 ;else return 1;
 }
 HWND  create_win(HINSTANCE hInst,char* AppTitle,int nCmdShow,int x,int y,int w,int h){
+  // DWORD style = WS_OVERLAPPEDWINDOW ;
+  DWORD style = WS_OVERLAPPED  | WS_SYSMENU | WS_THICKFRAME  ;
 	HWND hwnd = CreateWindow(AppTitle,AppTitle, 
-	    WS_OVERLAPPEDWINDOW, 
+	    style, 
 	    x,y,w,h,
 	    NULL,NULL,hInst,NULL); 
 	// ::SendMessage(hwnd, WM_SETFONT, (WPARAM)::GetStockObject(DEFAULT_GUI_FONT), MAKELPARAM(FALSE, 0));
@@ -39,22 +41,21 @@ void loop(){
 	    DispatchMessage(&msg); 
 	  } 
 }
-void set_font(HWND hwnd){
-	HFONT hf;
+void set_font(HWND hwnd,int height){
+	  HFONT hf;
     HDC hdc;
     long lfHeight;
     
     hdc = GetDC(NULL);
-    lfHeight = -MulDiv(12, GetDeviceCaps(hdc, LOGPIXELSY), 40);
-    ReleaseDC(NULL, hdc);
-
-    hf = CreateFont(lfHeight, 0, 0, 0, 0, TRUE, 0, 0, 0, 0, 0, 0, 0, "Times New Roman");
+    lfHeight = -MulDiv(height, GetDeviceCaps(hdc, LOGPIXELSY), 40);
+    ReleaseDC(NULL, hdc);    
+    hf = CreateFont(lfHeight, 0, 0, 0, 0, FALSE, 0, 0, 0, 0, 0, 0, 0, "Times New Roman");
     SendMessage (hwnd, WM_SETFONT, WPARAM (hf), TRUE);
 }
 HWND create_edit(LPCWSTR text,int x,int y,int w,int h,HWND hwnd,int id){
     HWND hwndedit = CreateWindowW(L"EDIT", text, WS_CHILD | WS_VISIBLE | SS_LEFT |WS_BORDER ,
             x,y,w,h,hwnd, (HMENU) id, NULL, NULL);
-    set_font(hwndedit);
+    set_font(hwndedit,12);
     return hwndedit;
 }
 
@@ -64,8 +65,10 @@ HWND create_button(LPCWSTR text,int x,int y,int w,int h,HWND hwnd,int id){
 }
 
 HWND create_label(LPCWSTR text,int x,int y,int w,int h,HWND hwnd,int id){
- 	return CreateWindowW(L"STATIC", text, WS_CHILD | WS_VISIBLE | SS_LEFT,
+ 	HWND hwndedit = CreateWindowW(L"STATIC", text, WS_CHILD | WS_VISIBLE | SS_LEFT,
             x,y,w,h,hwnd, (HMENU) id, NULL, NULL);
+  set_font(hwndedit,8);
+  return hwndedit;
 }
 
 // winsock net
