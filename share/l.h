@@ -1,4 +1,5 @@
 // 0 -failure 1-sucess 
+HWND get_rootwindow();
 int create_class(HINSTANCE hInst,char* AppTitle,WNDPROC  WindowProc);
 HWND  create_win(HINSTANCE hInst,char* AppTitle,int nCmdShow,int x,int y,int w,int h);
 void loop();

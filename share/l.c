@@ -7,6 +7,17 @@
 
 
 #include "l.h"
+
+HWND get_rootwindow(){
+  HWND w =GetActiveWindow();
+  HWND last ;
+  while(w !=NULL){
+    last = w;
+    w= GetParent(last);
+  }
+  return last ;
+}
+
 // LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam); 
 // 0 -failure 1-sucess 
 int create_class(HINSTANCE hInst,char* AppTitle,WNDPROC  WindowProc){

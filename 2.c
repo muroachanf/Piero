@@ -14,13 +14,25 @@ g++.exe -mwindows 2.c share/l.c -o 2  -static -Wno-write-strings -lws2_32 -lole3
 #include <stdio.h>
 #include "l.h"
 
-HWND g_hwnd ;
+void log2(HWND v1, HWND v2){
+  char aa[100];
+  sprintf(aa,"%d,%d",v1,v2);
+  SetWindowText(get_rootwindow(),aa);
+}
+
+void log3(HINSTANCE v1, HMODULE v2){
+  char aa[100];
+  sprintf(aa,"%d,%d",v1,v2);
+  SetWindowText(get_rootwindow(),aa);
+}
+// HWND g_hwnd ;
 int WinMain(HINSTANCE hInst,HINSTANCE,LPSTR,int nCmdShow) 
 {   
+  log3(hInst,GetModuleHandle (NULL));
 	char *AppTitle="Dictionary"; 
 	if (0==create_class(hInst,AppTitle,WindowProc))
 		return 0;  
-	g_hwnd = create_win(hInst,AppTitle,nCmdShow,CW_USEDEFAULT,CW_USEDEFAULT,400,180);	
+	create_win(hInst,AppTitle,nCmdShow,CW_USEDEFAULT,CW_USEDEFAULT,400,180);	
 	loop(); 
 } 
 
@@ -29,13 +41,10 @@ const int id_query = 1;
 const int id_quit = 2;
 const int id_static = 3;
 
-
-void on_query(HWND hwnd){
-       // char temp[100] ;
-       // memset(temp,0,sizeof(temp));
-       // sprintf(temp, "%d", hwnd);
-       // MessageBox(NULL, "temp", NULL, MB_OK);
-       HWND hwndedit = GetDlgItem(hwnd,id_edit);
+void on_enter(){
+       HWND hwnd = get_rootwindow();
+       HWND hwndedit = GetDlgItem(hwnd,id_edit);       
+       // log2(g_hwnd,get_rootwindow(hwndedit));
        int len = GetWindowTextLengthW(hwndedit) + 1;         
        char text[len];
        GetWindowText(hwndedit, text, len);
@@ -60,24 +69,18 @@ WNDPROC DefEditProc ;
 LRESULT CALLBACK MyEditProc(HWND hDlg, UINT message,WPARAM wParam, LPARAM lParam) {
   switch(message) {
   case WM_CHAR:
-    if( wParam == VK_RETURN ) {
-        /* User pressed ENTER -- do what you want here. */
-        // PostQuitMessage(0);
-        on_query(g_hwnd);
+    if( wParam == VK_RETURN ) {        
+        on_enter();
         return(0);
-    }
-    else 
-        return( (LRESULT)CallWindowProc((WNDPROC)DefEditProc,hDlg,message,wParam,lParam) );
-    break;
+    }    
   default:
-    return( (LRESULT)CallWindowProc((WNDPROC)DefEditProc,hDlg,message,wParam,lParam) );
     break;
   }
-  return(0);
+  return( (LRESULT)CallWindowProc((WNDPROC)DefEditProc,hDlg,message,wParam,lParam) );
 }
 void on_click(int id,HWND hwnd){      
     if(id==id_query){
-       on_query(hwnd);
+       on_enter();
     }else{
        PostQuitMessage(0);
     }
