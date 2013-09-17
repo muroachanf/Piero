@@ -17,3 +17,4 @@ void create_link(BOOL force);
 // HRESULT CreateShellLink(LPCSTR pszShortcutFile, LPSTR pszLink, LPSTR pszDesc);
 // BOOL AddNewGroup(LPSTR GroupName, char szPath [MAX_PATH]) ;
 // BOOL FileExists(LPCTSTR szPath);
+

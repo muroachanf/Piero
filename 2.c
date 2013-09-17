@@ -2,7 +2,7 @@
 /*
 set path=%path%;c:\mingw\bin\
 set prompt=%
-g++.exe -mwindows 2.c share/l.c -o 2  -static -Wno-write-strings -lws2_32 -lole32 -luuid -lShlwapi -Ishare
+g++.exe -mwindows 2.c share/l.c share/logger.c -o 2  -static -Wno-write-strings -lws2_32 -lole32 -luuid -lShlwapi -Ishare
 
 #pragma comment(lib, "Shlwapi.lib")
 #pragma comment(lib, "Ole32.lib")
@@ -13,22 +13,11 @@ g++.exe -mwindows 2.c share/l.c -o 2  -static -Wno-write-strings -lws2_32 -lole3
 #include <wchar.h>
 #include <stdio.h>
 #include "l.h"
+#include "logger.h"
 
-void log2(HWND v1, HWND v2){
-  char aa[100];
-  sprintf(aa,"%d,%d",v1,v2);
-  SetWindowText(get_rootwindow(),aa);
-}
-
-void log3(HINSTANCE v1, HMODULE v2){
-  char aa[100];
-  sprintf(aa,"%d,%d",v1,v2);
-  SetWindowText(get_rootwindow(),aa);
-}
 // HWND g_hwnd ;
 int WinMain(HINSTANCE hInst,HINSTANCE,LPSTR,int nCmdShow) 
 {   
-  log3(hInst,GetModuleHandle (NULL));
 	char *AppTitle="Dictionary"; 
 	if (0==create_class(hInst,AppTitle,WindowProc))
 		return 0;  
@@ -43,8 +32,8 @@ const int id_static = 3;
 
 void on_enter(){
        HWND hwnd = get_rootwindow();
-       HWND hwndedit = GetDlgItem(hwnd,id_edit);       
-       // log2(g_hwnd,get_rootwindow(hwndedit));
+       HWND hwndedit = GetDlgItem(hwnd,id_edit);              
+       _log("logger %d %d",hwnd,hwndedit);
        int len = GetWindowTextLengthW(hwndedit) + 1;         
        char text[len];
        GetWindowText(hwndedit, text, len);
