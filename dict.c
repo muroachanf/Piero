@@ -78,7 +78,7 @@ int WinMain(HINSTANCE hInst,HINSTANCE,LPSTR,int nCmdShow)
   // sprintf(filename,"%d",hwnd);
   // CreateFile(filename, FILE_READ_DATA, FILE_SHARE_READ,NULL, OPEN_ALWAYS, 0, NULL);
   write_hwnd(hwnd);  
-	loop(); 
+	loop(hwnd); 
 } 
 
 const int id_edit = 5;
@@ -166,6 +166,13 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
       on_paint(hwnd);
       break; 
     } 
+    case WM_ACTIVATE:
+    {
+      HWND hwndedit = GetDlgItem(hwnd,id_edit);
+      SetFocus(hwndedit);
+      // 没有break ，死相很惨
+      break;
+    }
     case WM_DESTROY: 
       DeleteFile(hwnd_file);
       PostQuitMessage(0); 

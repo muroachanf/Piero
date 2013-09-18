@@ -50,12 +50,14 @@ HWND  create_win(HINSTANCE hInst,char* AppTitle,int nCmdShow,int x,int y,int w,i
 	UpdateWindow(hwnd); 
 	return hwnd;
 }
-void loop(){
+void loop(HWND hwnd){    
 	  MSG msg; 
 	  while (GetMessage(&msg,NULL,0,0) > 0) 
 	  { 
-	    TranslateMessage(&msg); 
-	    DispatchMessage(&msg); 
+      if(!IsDialogMessage(hwnd,&msg)){
+  	    TranslateMessage(&msg); 
+  	    DispatchMessage(&msg); 
+      }
 	  } 
 }
 void set_font(HWND hwnd,int height){
@@ -70,14 +72,14 @@ void set_font(HWND hwnd,int height){
     SendMessage (hwnd, WM_SETFONT, WPARAM (hf), TRUE);
 }
 HWND create_edit(LPCWSTR text,int x,int y,int w,int h,HWND hwnd,int id){
-    HWND hwndedit = CreateWindowW(L"EDIT", text, WS_CHILD | WS_VISIBLE | SS_LEFT |WS_BORDER ,
+    HWND hwndedit = CreateWindowW(L"EDIT", text, WS_CHILD | WS_VISIBLE | SS_LEFT |WS_BORDER|WS_TABSTOP  ,
             x,y,w,h,hwnd, (HMENU) id, NULL, NULL);
     set_font(hwndedit,12);
     return hwndedit;
 }
 
 HWND create_button(LPCWSTR text,int x,int y,int w,int h,HWND hwnd,int id){
-  return CreateWindowW(L"button", text, WS_CHILD | WS_VISIBLE | SS_LEFT,
+  return CreateWindowW(L"button", text, WS_CHILD | WS_VISIBLE | SS_LEFT|WS_TABSTOP ,
             x,y,w,h,hwnd, (HMENU) id, NULL, NULL);
 }
 
