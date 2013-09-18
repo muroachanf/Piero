@@ -170,13 +170,13 @@ void get_badrobot(char *word,char*buffer,int size){
   printf("len:%d\n", len);       
   ignore_header(buffer);  
 }
-int main(int argc,char *argv[]){
-  char buffer[20000];
-  get_badrobot("scandal",buffer,sizeof(buffer));  
-  buffer2file(buffer,"TheFile.txt");
-  printf(buffer);    
-  return 0;
-}
+// int main(int argc,char *argv[]){
+//   char buffer[20000];
+//   get_badrobot("scandal",buffer,sizeof(buffer));  
+//   buffer2file(buffer,"TheFile.txt");
+//   printf(buffer);    
+//   return 0;
+// }
 
 // int main(int argc,char *argv[]){
 //   char buffer[20000];
