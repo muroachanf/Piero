@@ -1,5 +1,6 @@
 
 /*
+cd "My documents\github\piero"
 set path=%path%;c:\mingw\bin\
 set prompt=%
 g++.exe -mwindows 2.c share/l.c share/logger.c -o 2  -static -Wno-write-strings -lws2_32 -lole32 -luuid -lShlwapi -Ishare
@@ -16,12 +17,67 @@ g++.exe -mwindows 2.c share/l.c share/logger.c -o 2  -static -Wno-write-strings 
 #include "logger.h"
 
 // HWND g_hwnd ;
+
+LPCTSTR INSTANCE_DETECTION_OBJECT_NAME = ("www.abstraction.net_OneInstanceApp_v10_InstanceControl");
+
+BOOL is_running(){
+    HANDLE h_sem = ::CreateSemaphore (NULL, 0, 1,
+                                  INSTANCE_DETECTION_OBJECT_NAME);
+    DWORD err = ::GetLastError ();
+    if (err == ERROR_ALREADY_EXISTS)
+    {      
+          return TRUE;
+    }
+    return FALSE;
+}
+BOOL is_running1(){
+  char cmdstr[100];
+  memset(cmdstr,0,sizeof(cmdstr));
+  // sprintf(cmdstr,"dict_%i_%i",1,2);  
+  sprintf(cmdstr,"Global\\dict");  
+  HANDLE m_hMutex = CreateMutex(NULL, TRUE, cmdstr); 
+  DWORD m_dwLastError = GetLastError(); 
+  return (ERROR_ALREADY_EXISTS == m_dwLastError);
+}
+
+char *hwnd_file="hwnd.txt"; 
+HWND get_hwnd(){
+  FILE *fp = fopen (hwnd_file,"r");
+  char line[1024];  
+  memset(line,0,sizeof(line));
+  if( fp == NULL ) 
+      return (HWND)(LONG_PTR)0;  
+  if ( fgets(line,1024,fp) ) {
+    return (HWND)(LONG_PTR)atoi(line);
+  }    
+  fclose(fp);
+  return 0;
+}
+void write_hwnd(HWND hwnd){
+  DeleteFile(hwnd_file);
+  FILE *fp = fopen (hwnd_file,"w");
+  fprintf(fp,"%d",hwnd);
+  fclose(fp);
+}
 int WinMain(HINSTANCE hInst,HINSTANCE,LPSTR,int nCmdShow) 
 {   
+  if (is_running()){
+    HWND h = get_hwnd();
+    if (h!=0){
+       SetForegroundWindow(h);
+       return 0;
+     }
+  }
 	char *AppTitle="Dictionary"; 
 	if (0==create_class(hInst,AppTitle,WindowProc))
 		return 0;  
-	create_win(hInst,AppTitle,nCmdShow,CW_USEDEFAULT,CW_USEDEFAULT,400,180);	
+	HWND hwnd = create_win(hInst,AppTitle,nCmdShow,CW_USEDEFAULT,CW_USEDEFAULT,400,180);	
+  // DeleteFile("log.txt");
+  // _log("%d",hwnd);
+  // char filename[256];
+  // sprintf(filename,"%d",hwnd);
+  // CreateFile(filename, FILE_READ_DATA, FILE_SHARE_READ,NULL, OPEN_ALWAYS, 0, NULL);
+  write_hwnd(hwnd);  
 	loop(); 
 } 
 
@@ -111,6 +167,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
       break; 
     } 
     case WM_DESTROY: 
+      DeleteFile(hwnd_file);
       PostQuitMessage(0); 
       break; 
     case WM_COMMAND:
