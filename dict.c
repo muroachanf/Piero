@@ -13,7 +13,7 @@ g++.exe -mwindows 2.c share/l.c share/logger.c -o 2  -static -Wno-write-strings 
 #include <windows.h> 
 #include <wchar.h>
 #include <stdio.h>
-#include "l.h"
+#include "common.h"
 #include "logger.h"
 
 // HWND g_hwnd ;

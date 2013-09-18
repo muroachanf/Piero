@@ -6,7 +6,6 @@
 #include <objidl.h>
 
 
-#include "l.h"
 
 HWND get_rootwindow(){
   HWND w =GetActiveWindow();
