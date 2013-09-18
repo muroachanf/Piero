@@ -18,19 +18,19 @@ g++.exe -mwindows 2.c share/l.c share/logger.c -o 2  -static -Wno-write-strings 
 
 // HWND g_hwnd ;
 
-LPCTSTR INSTANCE_DETECTION_OBJECT_NAME = ("www.abstraction.net_OneInstanceApp_v10_InstanceControl");
+// LPCTSTR INSTANCE_DETECTION_OBJECT_NAME = ("www.abstraction.net_OneInstanceApp_v10_InstanceControl");
 
+// BOOL is_running(){
+//     HANDLE h_sem = ::CreateSemaphore (NULL, 0, 1,
+//                                   INSTANCE_DETECTION_OBJECT_NAME);
+//     DWORD err = ::GetLastError ();
+//     if (err == ERROR_ALREADY_EXISTS)
+//     {      
+//           return TRUE;
+//     }
+//     return FALSE;
+// }
 BOOL is_running(){
-    HANDLE h_sem = ::CreateSemaphore (NULL, 0, 1,
-                                  INSTANCE_DETECTION_OBJECT_NAME);
-    DWORD err = ::GetLastError ();
-    if (err == ERROR_ALREADY_EXISTS)
-    {      
-          return TRUE;
-    }
-    return FALSE;
-}
-BOOL is_running1(){
   char cmdstr[100];
   memset(cmdstr,0,sizeof(cmdstr));
   // sprintf(cmdstr,"dict_%i_%i",1,2);  
