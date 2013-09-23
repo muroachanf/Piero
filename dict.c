@@ -17,31 +17,7 @@ g++.exe -mwindows 2.c share/l.c share/logger.c -o 2  -static -Wno-write-strings 
 #include "common.h"
 #include "logger.h"
 
-// HWND g_hwnd ;
 
-// LPCTSTR INSTANCE_DETECTION_OBJECT_NAME = ("www.abstraction.net_OneInstanceApp_v10_InstanceControl");
-
-// BOOL is_running(){
-//     HANDLE h_sem = ::CreateSemaphore (NULL, 0, 1,
-//                                   INSTANCE_DETECTION_OBJECT_NAME);
-//     DWORD err = ::GetLastError ();
-//     if (err == ERROR_ALREADY_EXISTS)
-//     {      
-//           return TRUE;
-//     }
-//     return FALSE;
-// }
-
-HANDLE hMutex;
-BOOL is_running1(){
-  char cmdstr[100];
-  memset(cmdstr,0,sizeof(cmdstr));
-  // sprintf(cmdstr,"dict_%i_%i",1,2);  
-  sprintf(cmdstr,"Global\\dict");  
-  hMutex = CreateMutex(NULL, TRUE, cmdstr); 
-  DWORD m_dwLastError = GetLastError();   
-  return (ERROR_ALREADY_EXISTS == m_dwLastError);
-}
 int file_exists(TCHAR * file)
 {
    WIN32_FIND_DATA FindFileData;
@@ -179,7 +155,7 @@ void on_paint(HWND hwnd){
 }
 
 
-void on_create(HWND  hwnd){
+void on_create(HWND  hwnd){    
     HWND hwndedit = create_edit(L"cat",20, 20, 350, 40,hwnd, id_edit);        
     create_label(L"准备...",20, 60, 350, 40,hwnd, id_static);
     create_button(L"查询",20, 100, 350, 25,hwnd, id_query);
@@ -189,8 +165,42 @@ void on_create(HWND  hwnd){
     create_link(TRUE);
     // create_button(L"退出",20, 80, 80, 25,hwnd, id_quit);      
 }
+void on_activate(HWND  hwnd){  
+  SetFocus(GetDlgItem(hwnd,id_edit));
+}
+
+void on_destroy(HWND  hwnd){  
+  DeleteFile(hwnd_file);      
+  PostQuitMessage(0); 
+}
+
+LRESULT CALLBACK WindowProc1(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) 
+{ 
+  // return DefWindowProc(hwnd, msg, wparam, lparam); 
+  _log("msg:%d", msg);
+  if (msg ==WM_CREATE)
+    on_create(hwnd);        
+  else   if (msg ==WM_PAINT)
+    on_paint(hwnd);    
+  else   if (msg ==WM_ACTIVATE)
+    on_activate(hwnd);        
+  else   if (msg ==WM_DESTROY)
+    on_destroy(hwnd);        
+  else   if (msg ==WM_COMMAND)
+    if (HIWORD(wparam) == BN_CLICKED) 
+             on_click(LOWORD(wparam),hwnd);
+  else {
+    _log("msg:%d", msg);
+    if (msg ==WM_NCCREATE)
+      _log("WM_NCCREATE here");
+    return DefWindowProc(hwnd, msg, wparam, lparam);         
+  }
+  return 0;
+} 
+
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) 
 { 
+  // _log("msg:%d", msg);
   switch (msg) 
   { 
   	case WM_CREATE:
@@ -205,16 +215,15 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
     } 
     case WM_ACTIVATE:
     {
-      HWND hwndedit = GetDlgItem(hwnd,id_edit);
-      SetFocus(hwndedit);
+      on_activate(hwnd);      
       // 没有break ，死相很惨
       break;
     }
     case WM_DESTROY: 
-      DeleteFile(hwnd_file);
-      // CloseHandle (hMutex);
-      PostQuitMessage(0); 
+      on_destroy(hwnd);
       break; 
+    // case WM_ERASEBKGND :
+    //   return TRUE;
     case WM_COMMAND:
           if (HIWORD(wparam) == BN_CLICKED) {
              on_click(LOWORD(wparam),hwnd);  
