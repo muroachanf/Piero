@@ -14,4 +14,7 @@ dict: dict.o common.o logger.o
 	$(gcc)   dict.o common.o logger.o -o dict $(_lib)  -mwindows -static $(_flag)
 clean: 
 	rm -f *.o
-
+4.o:test/4.c
+	$(gcc) -c test/4.c -o 4.o  $(_flag) $(_include)
+test:4.o	
+	$(gcc)  4.o -static -o test/4  $(_lib)  -mwindows -static $(_flag)

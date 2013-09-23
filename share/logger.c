@@ -5,7 +5,7 @@
 #include <stdlib.h>
 
 FILE *fp ;
-static int SESSION_TRACKER; //Keeps track of session
+static int SESSION_TRACKER =1; //Keeps track of session
  
 char* print_time2()
 {
@@ -29,6 +29,7 @@ char* print_time(){
     return buffer ;
 }
 
+char *logger_file = "piero.txt";
 void log_print(char* filename, int line, char *fmt,...)
 {
     va_list         list;
@@ -36,9 +37,9 @@ void log_print(char* filename, int line, char *fmt,...)
     int             e;
  
     if(SESSION_TRACKER > 0)
-      fp = fopen ("log.txt","a+");
+      fp = fopen (logger_file,"a+");
     else
-      fp = fopen ("log.txt","w");
+      fp = fopen (logger_file,"w");
     char *t = print_time();
     fprintf(fp,"%s ",t);
     free(t);

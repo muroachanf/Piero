@@ -13,6 +13,7 @@ g++.exe -mwindows 2.c share/l.c share/logger.c -o 2  -static -Wno-write-strings 
 #include <windows.h> 
 #include <wchar.h>
 #include <stdio.h>
+#include <Shlwapi.h>
 #include "common.h"
 #include "logger.h"
 
@@ -30,17 +31,40 @@ g++.exe -mwindows 2.c share/l.c share/logger.c -o 2  -static -Wno-write-strings 
 //     }
 //     return FALSE;
 // }
-BOOL is_running(){
+
+HANDLE hMutex;
+BOOL is_running1(){
   char cmdstr[100];
   memset(cmdstr,0,sizeof(cmdstr));
   // sprintf(cmdstr,"dict_%i_%i",1,2);  
   sprintf(cmdstr,"Global\\dict");  
-  HANDLE m_hMutex = CreateMutex(NULL, TRUE, cmdstr); 
-  DWORD m_dwLastError = GetLastError(); 
+  hMutex = CreateMutex(NULL, TRUE, cmdstr); 
+  DWORD m_dwLastError = GetLastError();   
   return (ERROR_ALREADY_EXISTS == m_dwLastError);
 }
+int file_exists(TCHAR * file)
+{
+   WIN32_FIND_DATA FindFileData;
+   HANDLE handle = FindFirstFile(file, &FindFileData) ;
+   int found = handle != INVALID_HANDLE_VALUE;
+   if(found) 
+   {
+       //FindClose(&handle); this will crash
+       FindClose(handle);
+   }
+   return found;
+}
 
-char *hwnd_file="hwnd.txt"; 
+// char *hwnd_file="c:\\hwnd.txt"; 
+char hwnd_file[256];
+BOOL is_running(){
+   // if (file_exists(hwnd_file))
+   //   _log("exists");
+   // else
+   //   _log("no exists");  
+   return file_exists(hwnd_file);
+}
+
 HWND get_hwnd(){
   FILE *fp = fopen (hwnd_file,"r");
   char line[1024];  
@@ -59,8 +83,21 @@ void write_hwnd(HWND hwnd){
   fprintf(fp,"%d",hwnd);
   fclose(fp);
 }
+void ready_hwnd_file()
+{
+  memset(hwnd_file,0,sizeof(hwnd_file));
+  GetModuleFileName(GetModuleHandle (NULL),hwnd_file,sizeof(hwnd_file));
+  // _log(hwnd_file);
+  PathRemoveFileSpec(hwnd_file);
+  strcat(hwnd_file,"\\hwnd.txt");
+  // _log(hwnd_file);
+}
 int WinMain(HINSTANCE hInst,HINSTANCE,LPSTR,int nCmdShow) 
 {   
+  // _log("begin log");
+  // fill_hwnd_file();
+  ready_hwnd_file();
+  
   if (is_running()){
     HWND h = get_hwnd();
     if (h!=0){
@@ -175,6 +212,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
     }
     case WM_DESTROY: 
       DeleteFile(hwnd_file);
+      // CloseHandle (hMutex);
       PostQuitMessage(0); 
       break; 
     case WM_COMMAND:
