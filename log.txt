@@ -1,2 +1,0 @@
-2013:09:2311:20:04 begin log [dict.c][line: 86] 
-2013:09:2311:20:04 exists [dict.c][line: 60] 

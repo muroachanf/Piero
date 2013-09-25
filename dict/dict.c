@@ -16,81 +16,17 @@ g++.exe -mwindows 2.c share/l.c share/logger.c -o 2  -static -Wno-write-strings 
 #include <Shlwapi.h>
 #include "common.h"
 #include "logger.h"
+#include "hwnd_file.h"
 
-
-int file_exists(TCHAR * file)
-{
-   WIN32_FIND_DATA FindFileData;
-   HANDLE handle = FindFirstFile(file, &FindFileData) ;
-   int found = handle != INVALID_HANDLE_VALUE;
-   if(found) 
-   {
-       //FindClose(&handle); this will crash
-       FindClose(handle);
-   }
-   return found;
-}
-
-// char *hwnd_file="c:\\hwnd.txt"; 
-char hwnd_file[256];
-BOOL is_running(){
-   // if (file_exists(hwnd_file))
-   //   _log("exists");
-   // else
-   //   _log("no exists");  
-   return file_exists(hwnd_file);
-}
-
-HWND get_hwnd(){
-  FILE *fp = fopen (hwnd_file,"r");
-  char line[1024];  
-  memset(line,0,sizeof(line));
-  if( fp == NULL ) 
-      return (HWND)(LONG_PTR)0;  
-  if ( fgets(line,1024,fp) ) {
-    return (HWND)(LONG_PTR)atoi(line);
-  }    
-  fclose(fp);
-  return 0;
-}
-void write_hwnd(HWND hwnd){
-  DeleteFile(hwnd_file);
-  FILE *fp = fopen (hwnd_file,"w");
-  fprintf(fp,"%d",hwnd);
-  fclose(fp);
-}
-void ready_hwnd_file()
-{
-  memset(hwnd_file,0,sizeof(hwnd_file));
-  GetModuleFileName(GetModuleHandle (NULL),hwnd_file,sizeof(hwnd_file));
-  // _log(hwnd_file);
-  PathRemoveFileSpec(hwnd_file);
-  strcat(hwnd_file,"\\hwnd.txt");
-  // _log(hwnd_file);
-}
 int WinMain(HINSTANCE hInst,HINSTANCE,LPSTR,int nCmdShow) 
 {   
-  // _log("begin log");
-  // fill_hwnd_file();
-  ready_hwnd_file();
-  
-  if (is_running()){
-    HWND h = get_hwnd();
-    if (h!=0){
-       SetForegroundWindow(h);
-       return 0;
-     }
-  }
-	char *AppTitle="Dictionary"; 
-	if (0==create_class(hInst,AppTitle,WindowProc))
+  if (check_instance_should_exit())
+    return 0;
+	char *title="Dictionary"; 
+	if (0==create_class(hInst,title,WindowProc))
 		return 0;  
-	HWND hwnd = create_win(hInst,AppTitle,nCmdShow,CW_USEDEFAULT,CW_USEDEFAULT,400,180);	
-  // DeleteFile("log.txt");
-  // _log("%d",hwnd);
-  // char filename[256];
-  // sprintf(filename,"%d",hwnd);
-  // CreateFile(filename, FILE_READ_DATA, FILE_SHARE_READ,NULL, OPEN_ALWAYS, 0, NULL);
-  write_hwnd(hwnd);  
+	HWND hwnd = create_win(hInst,title,nCmdShow,CW_USEDEFAULT,CW_USEDEFAULT,400,180);	
+  hwnd_write(hwnd);  
 	loop(hwnd); 
 } 
 
@@ -170,7 +106,7 @@ void on_activate(HWND  hwnd){
 }
 
 void on_destroy(HWND  hwnd){  
-  DeleteFile(hwnd_file);      
+ hwnd_clear ();    
   PostQuitMessage(0); 
 }
 

@@ -18,3 +18,4 @@ void create_link(BOOL force);
 // BOOL AddNewGroup(LPSTR GroupName, char szPath [MAX_PATH]) ;
 // BOOL FileExists(LPCTSTR szPath);
 
+int file_exists(TCHAR * file);
