@@ -32,6 +32,22 @@ THEN
 
 为什么说第一个命令像是针眼画师呢。关键在于那个^> 。因为">"在dos里面是有特殊含义的，要输入一个原本的>,必须做转义，就是Escape。^就是转义符号。
 
+其实，上面的命令可以再花哨一点。因为dot接受stdout作为dot输入，而echo 可以输出到stdout，因此，管道可用！
+
+	echo digraph abc{a;b;a-^>b;} | dot -Tpng  -o 3.png
+
+	echo digraph abc{a^;b^;a-^>b^;} | dot -Tpng  -o 3.png
+	到底 echo的内容过去dot那里了吗？
+
+	用  | more 来调试。发现有时">",可是，我已经转义了啊。
+
+	BANG !
+
+	
+	type simplest.dot | dot -Tpng  -o 3.png
+
+	TBD!
+
 How do I create a multiline text file with Echo in Windows command prompt?
 
 There are three ways.
