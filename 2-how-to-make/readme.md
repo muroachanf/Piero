@@ -6,13 +6,13 @@ C语言中的Make文件，存在盘根错节的文件依赖关系，可视化它
 
 先看一个最简单的图。你只要打开cmd，输入如下命令：
 
-# echo digraph abc{a;b;a-^>b;} >simplest.dot
-# dot -Tpng simplest.dot -o 1.png
-# 1.png
+c:\ echo digraph abc{a;b;a-^>b;} >simplest.dot
+c:\ dot -Tpng simplest.dot -o 1.png
+c:\ 1.png
 
 THEN
 
-![](/2-how-to-make/1.png)
+![结果](1.png)
 
 第一行命令看着不自在，像是针眼画师，看看生成了啥？
 
@@ -23,7 +23,7 @@ digraph abc{a;b;a->b;}
 
 这样，可视化这个make文件(https://github.com/1000copy/Piero/blob/master/2-how-to-make/GnuMakefile)，也就简单。
 
-[结果](/blob/master/2-how-to-make/deps.dot)。
+[结果](deps.dot)。
 
 
 -------------------
