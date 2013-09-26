@@ -1,6 +1,6 @@
 digraph abc{
 	node [shape="record"];
-	edge [style="dashed"];
+	edge [style="dashed",color="crimson"];
 
 	exe [label="hello.exe"];
 	helloc[label="hello.c"];
