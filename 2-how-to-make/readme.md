@@ -21,7 +21,7 @@ THEN
 
 简洁。你看，要在dot文件中定义节点（这里是a,b),然后定义链接（这里是a->b)。这就是图片的蓝图文件了。
 
-这样，可视化这个[make](GnuMakefile.)也就简单。
+这样，可视化这个[make](GnuMakefile)也就简单。
 
 [结果](deps.dot)。
 
