@@ -30,6 +30,8 @@ THEN
 
 为了不必写“保存以下文本为 simplest.dot,然后执行blabla...” 这类的口水话，我可是认真研究了“如何写入文本到文件”。现在就可以完全命令行了。
 
+为什么说第一个命令像是针眼画师呢。关键在于那个^> 。因为">"在dos里面是有特殊含义的，要输入一个原本的>,必须做转义，就是Escape。^就是转义符号。
+
 How do I create a multiline text file with Echo in Windows command prompt?
 
 There are three ways.
@@ -56,26 +58,4 @@ Product Key: TJQAW-VG29Y-G194Y-E7KRT-BYH9G
 
 ^Z
  1 file(s) copied.
-
-
-
-    
-Escape CharactersAll DOS versions interpret certain characters before executing a command.
-Some well know examples are the percent sign ( % ), and the redirection symbols ( < | > ).
-Windows 95/98 and NT, and OS/2 too, also interpret double quotes ( " ) and ampersands ( & ), as shown in the Conditional Execution page.
-In batch files, the percent sign may be "escaped" by using a double percent sign ( %% ).
-That way, a single percent sign will be used as literal within the command line, instead of being furter interpreted.
-In Windows 95/98 and NT, and OS/2 too, redirection symbols may be escaped by placing them between double quotes ( ">" ).
-However, the quotes themselves will be passed to the command too, unlike the double percent sign.
-Windows NT and OS/2 also allow the use of carets ( ^ ) to escape special characters. Even linefeeds can be escaped this way, as is shown in the Useless Tips page.
-If you intend to "nest" commands with escaped characters, you may need to escape the escape character itself too.
-In general, that won't make it any easier to read or debug your batch files, however.
-Since the introduction of delayed variable expansion a new challenge is to escape exclamation marks, the "delayed" version of the percent sign.
-Unlike percent signs, that can be escaped by doubling them, exclamation marks cannot be escaped by adding an extra exclamation mark.
-Nor does a caret befor the exclamation mark work, unless quoted (i.e. ECHO ^! will fail to display an exclamation mark, whereas ECHO "^!" will display a quoted exclamation mark: "!").
-Jaime Ramos sent me this link where the solution can be found: use ^^!.
-The trick is that a single caret will be used to escape the exclamation mark in the firt "pass" of command line interpretation, but delayed variable expansion adds a second "pass" where the exclamation mark will be interpreted. If you don't get it, never mind, just remember the double caret before the exclamation mark.
-To Be InvestigatedRecently I discovered that (in Windows 7) with ECHO commands, an entire line can often be escaped with a single ASCII character 26 (Ctrl+Z or EOF, End Of File) as the first character to be ECHOed.
-Only the > character may sometimes still be interpreted as "redirect to ..."
-SummaryEscape CharactersCharacter to be escapedEscape SequenceRemark%%%May not always be required in doublequoted strings, just try^^^May not always be required in doublequoted strings, but it won't hurt&^&<^<>^>|^|'^'Required only in the FOR /F "subject" (i.e. between the parenthesis), unless backq is used`^`Required only in the FOR /F "subject" (i.e. between the parenthesis), if backq is used,^,Required only in the FOR /F "subject" (i.e. between the parenthesis), even in doublequoted strings;^;=^=(^()^)!^^!Required only when delayed variable expansion is active\\\Required only in the regex pattern of FINDSTR[\[]\]"\"
 
