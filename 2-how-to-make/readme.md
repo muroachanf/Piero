@@ -6,9 +6,9 @@ C语言中的Make文件，存在盘根错节的文件依赖关系，可视化它
 
 先看一个最简单的图。你只要打开cmd，输入如下命令：
 
--- echo digraph abc{a;b;a-^>b;} >simplest.dot
--- dot -Tpng simplest.dot -o 1.png
--- 1.png
+	echo digraph abc{a;b;a-^>b;} >simplest.dot
+	dot -Tpng simplest.dot -o 1.png
+	1.png
 
 THEN
 
@@ -16,8 +16,8 @@ THEN
 
 第一行命令看着不自在，像是针眼画师，看看生成了啥？
 
--- type simplest.dot
-digraph abc{a;b;a->b;}
+	type simplest.dot
+	digraph abc{a;b;a->b;}
 
 简洁。你看，要在dot文件中定义节点（这里是a,b),然后定义链接（这里是a->b)。这就是图片的蓝图文件了。
 
