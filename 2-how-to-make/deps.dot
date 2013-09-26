@@ -1,0 +1,17 @@
+digraph abc{
+	node [shape="record"];
+	edge [style="dashed"];
+
+	exe [label="hello.exe"];
+	helloc[label="hello.c"];
+	hic[label="hi.c"];
+	hih[label="hi.h"];
+	helloo[label="hello.o"];
+	hio[label="hi.o"];
+	exe->helloo;
+	exe->hio;
+
+	hio->hic;
+	helloo->helloc;
+	helloo->hih;	
+}

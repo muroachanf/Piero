@@ -1,13 +1,9 @@
 all: hello.exe
-
 hello.exe: hi.o hello.o
 	 gcc -o hello.exe hi.o hello.o
-
 hello.o: hello.c hi.h
-	 gcc -c hello.c 
-     
+	 gcc -c hello.c      
 hi.o: hi.c 
 	 gcc -c hi.c
-
 clean:
 	 rm *.exe *.o 
