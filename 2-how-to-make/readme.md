@@ -28,25 +28,52 @@ THEN
 
 -------------------
 
-为了不必写“保存以下文本为 simplest.dot,然后执行blabla...” 这类的口水话，我可是认真研究了“如何写入文本到文件”。现在就可以完全命令行了。
+### 时间之外的往事
 
-为什么说第一个命令像是针眼画师呢。关键在于那个^> 。因为">"在dos里面是有特殊含义的，要输入一个原本的>,必须做转义，就是Escape。^就是转义符号。
+说好要做 windows++ 也没弄。
 
-其实，上面的命令可以再花哨一点。因为dot接受stdout作为dot输入，而echo 可以输出到stdout，因此，管道可用！
+是这样的。我想把这两个命令合并为一个
+就是
+  echo digraph abc{a;b;a-^>b;} >simplest.dot
+  dot -Tpng simplest.dot -o 1.png
+搞成这样的：
+  echo digraph abc{a;b;a-^>b;} |  dot -Tpng simplest.dot -o 1.png
+实际上不行。因为尽管 "^>" 做了转义(^是转义符号)，但是在有"|"的情况下，cmd断句显然出现了问题。
 
-	echo digraph abc{a;b;a-^>b;} | dot -Tpng  -o 3.png
+把dot换成more来调试可以发现管道什么也没有传过来。
+  $echo digraph abc{a;b;a-^>b;} |  more
+标引可以过来，但是多了”，人家dot不认。
+   $echo "digraph abc{a;b;a->b;}" |  more
+   "digraph abc{a;b;a->b;}"   
+最后，有去看了鬼怪的bat语法，比如FOR命令。太丑陋了，晚上没有睡好。
+第二天灯泡时刻突袭了我。带命令一起标引：
 
-	echo digraph abc{a^;b^;a-^>b^;} | dot -Tpng  -o 3.png
-	到底 echo的内容过去dot那里了吗？
+  cmd /c "echo digraph abc{a;b;a->b;}" |  more
 
-	用  | more 来调试。发现有时">",可是，我已经转义了啊。
+cmd正确的做了断句。因为用""做了quoted ,因此Esc 转义就不在必要，^可以也必须删除。
 
-	BANG !
+并且，可读性很好哦。
 
-	
-	type simplest.dot | dot -Tpng  -o 3.png
+坑人。原因在于文本得人看得懂，还不能二义，人类的限制。
 
-	TBD!
+
+dot命令是什么？
+     graphviz的命令行版本
+如何知道dot命令支持标准输入？
+把
+     dot -Tpng simplest.dot -o 1.png
+改成
+
+     dot -Tpng  -o 1.png
+它就会等你在stdin内录入文件内容并ctrl+z，这就可以说明了。
+
+
+
+这样的坑，来自于，我总是不想写这样的口水话：“保存以下文本为 simplest.dot,然后执行blabla...” 。所以，这是自找的。
+
+-----
+
+###more tricks 
 
 How do I create a multiline text file with Echo in Windows command prompt?
 

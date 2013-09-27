@@ -1,6 +1,0 @@
-digraph abc{
-     a;
-     b;
-     a->b;
-}
-
