@@ -70,8 +70,9 @@ cmd正确的做了断句。虽然用""做了quoted ,但是 Esc 转义还是必�
   4. 不能more
   $echo digraph abc{a;b;a-^>b;} |more
 
-到处都是坑的bat。  
+到处都是坑的BAT。  
 
+WINDOWS++ ,我来了。
 dot命令是什么？
      graphviz的命令行版本
 如何知道dot命令支持标准输入？
