@@ -1,0 +1,4 @@
+HELLO.EXE: HELLO.C
+	rc -r hello.rc
+	cl /GA hello.c hello.res KERNEL32.LIB USER32.LIB GDI32.LIB /DWIN32_LEAN_AND_MEAN 
+

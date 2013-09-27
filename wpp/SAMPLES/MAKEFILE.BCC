@@ -1,0 +1,53 @@
+#
+# Windows++ Makefile for Borland.
+# (C) Paul DiLascia 1992.  All rights reserved.
+#
+# Contains all build instructions for Windows++ sample programs
+#
+# To build sample programs:
+#
+#	make -f makefile.bcc [DLL=1] [DEBUG=1]
+#
+WPPDIR = ..
+WPPLIB = $(WPPDIR)\wpp.lib
+
+!ifdef DEBUG
+CFLAGS = -v -D_DEBUG
+!else
+CFLAGS = -O2
+!endif
+
+CL = bcc32.exe
+RC = brc32.exe
+CFLAGS= $(CFLAGS) -w-par -w-hid -tW -lV4.0 /DWIN32_LEAN_AND_MEAN -I$(WPPDIR)
+
+LIBS = $(WPPLIB)
+
+!ifdef DLL
+CFLAGS = $(CFLAGS) -DUSEDLL
+!endif
+
+.rc.res:
+	$(RC) -r -i $(WPPDIR) $<
+
+.cpp.exe:
+	$(CL) $(CFLAGS) $< $(LIBS)
+	$(RC) $*.res
+
+all: hello.exe launch.exe mandel.exe medit.exe \
+	mkc.exe people.exe randrect.exe toe.exe winedit.exe draw.exe memtest.exe
+
+clean:
+	del *.obj *.exe *.res *.pch *.pdb *.ilk *.map *.lst
+
+hello.exe:		$(WPPLIB)	hello.cpp	hello.res
+launch.exe:		$(WPPLIB)	launch.cpp	launch.res
+mandel.exe:		$(WPPLIB)	mandel.cpp	mandel.res mandel.h complex.h
+medit.exe:		$(WPPLIB)	medit.cpp	medit.res
+mkc.exe:			$(WPPLIB)	mkc.cpp		mkc.res
+people.exe:		$(WPPLIB)	people.cpp	people.res people.h
+randrect.exe:	$(WPPLIB)	randrect.cpp randrect.res
+toe.exe:			$(WPPLIB)	toe.cpp		toe.res
+winedit.exe:	$(WPPLIB)	winedit.cpp	winedit.res
+draw.exe:		$(WPPLIB)	draw.cpp		draw.res draw.h
+memtest.exe:	$(WPPLIB)	memtest.cpp memtest.res

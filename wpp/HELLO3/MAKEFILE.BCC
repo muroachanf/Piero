@@ -1,0 +1,35 @@
+# Makefile for HELLO3.CPP
+# Copyright 1992,1996 Paul DiLascia
+#
+
+CL = bcc32.exe
+RC = brc32.exe
+LINK = bcc32.exe
+CFLAGS= -c -w-par -tW 
+LFLAGS= -tW
+WPPOBJ = wpwin.obj wpapp.obj wpmain.obj winmain.obj
+
+.cpp.obj:
+	$(CL) $(CFLAGS) $<
+
+.rc.res:
+	$(RC) -r $<
+
+.obj.exe:
+	rc $*
+
+hello3.exe: hello3.obj hello3.res wpp.lib 
+	$(LINK) $(LFLAGS) hello3.obj wpp.lib
+	$(RC) hello3.res
+
+wpp.lib: $(WPPOBJ)
+	del wpp.lib
+	tlib wpp.lib /C +wpwin+wpapp+wpmain+winmain
+
+clean:
+	del *.exe *.obj *.res
+
+wpapp.obj : wpmain.h wpwin.h wprect.h wppdefs.h wpapp.h wpapp.cpp
+wpmain.obj : wpmain.h wpwin.h wprect.h wppdefs.h wpapp.h wpmain.cpp
+wpwin.obj : wpwin.h wprect.h wppdefs.h wpapp.h wpwin.cpp
+wpmodule.obj : wppdefs.h wpmodule.cpp

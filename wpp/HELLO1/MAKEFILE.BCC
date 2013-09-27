@@ -1,0 +1,29 @@
+# Makefile for HELLO1.CPP
+# Copyright 1992,1996 Paul DiLascia
+#
+
+CL = bcc32.exe
+RC = brc32.exe
+LINK = bcc32.exe
+CFLAGS = -I"c:\Borland\Bcc55\include" -c -w-par -tW -DWIN32_LEAN_AND_MEAN 
+LFLAGS = -L"c:\Borland\Bcc55\lib"  -tW
+
+.cpp.obj:
+	$(CL) $(CFLAGS) $<
+
+.rc.res:
+	$(RC) -I"c:\Borland\Bcc55\include" -r $<
+
+hello1.exe: wpwin.obj hello1.obj hello1.res
+	$(LINK) $(LFLAGS) hello1.obj wpwin.obj
+	$(RC) hello1.res
+
+hello1.obj : hello1.cpp
+wpwin.obj : wpwin.h wprect.h wppdefs.h wpwin.cpp
+
+clean:
+	del *.obj *.exe *.res
+
+
+#BCC32 -L"c:\Borland\Bcc55\lib"  -tWhello1.obj wpwin.obj	
+#BCC32 -L"c:\Borland\Bcc55\lib" -I"c:\Borland\Bcc55\include" -c -w-par -tW -DWIN32_LEAN_AND_MEAN  hello1.cpp

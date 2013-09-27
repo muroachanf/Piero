@@ -1,0 +1,77 @@
+# Windows++ Makefile for MSC/C++
+# (C) Paul DiLascia 1992.  All rights reserved.
+#
+# Contains all build instructions for Windows++ sample programs
+#
+# To build sample programs, issue one of the following DOS commands.
+#
+#	nmake -f makefile.msc [DLL=1] [DEBUG=1]
+#
+WPPDIR = ..
+WPPLIB = $(WPPDIR)\wpp.lib
+
+!ifdef DEBUG
+CFLAGS = /Zi /D_DEBUG
+LFLAGS = /DEBUG /DEBUGTYPE:CV 
+!else
+CFLAGS = /O2
+LFLAGS = 
+!endif
+
+CL=cl.exe
+RC = rc.exe
+LINK = link.exe
+CFLAGS = $(CFLAGS) /GA /c /W3 /DWIN32_LEAN_AND_MEAN /I $(WPPDIR)
+CPPCREATEPCHFLAG = /Ycprefix.h
+CPPUSEPCHFLAG = /Yuprefix.h
+LFLAGS = $(LFLAGS) /SUBSYSTEM:windows /stack:0x2800 /machine:IX86
+
+LIBS = $(WPPLIB) KERNEL32.LIB USER32.LIB GDI32.LIB COMDLG32.LIB
+
+!ifdef DLL
+CFLAGS = $(CFLAGS) -DUSEDLL
+!endif
+
+.rc.res:
+	$(RC) -r -i $(WPPDIR) $<
+
+.cpp.obj:
+	$(CL) $(CFLAGS) $(CPPUSEPCHFLAG) $<
+
+.obj.exe:
+	$(LINK) $(LFLAGS) $*.obj $*.res prefix.obj $(LIBS)
+
+all: hello.exe launch.exe mandel.exe medit.exe \
+	mkc.exe people.exe randrect.exe toe.exe winedit.exe draw.exe memtest.exe
+
+prefix.obj: prefix.cpp $(WPPDIR)\wpp.h
+	$(CL) $(CFLAGS) $(CPPCREATEPCHFLAG) $*.cpp
+
+clean:
+	del *.obj *.exe *.res *.pch *.pdb *.ilk *.map *.lst
+
+prefix.obj: prefix.h
+
+hello.exe:		$(WPPLIB)	hello.obj	hello.res
+launch.exe:		$(WPPLIB)	launch.obj	launch.res
+mandel.exe:		$(WPPLIB)	mandel.obj	mandel.res
+medit.exe:		$(WPPLIB)	medit.obj	medit.res
+mkc.exe:			$(WPPLIB)	mkc.obj		mkc.res
+people.exe:		$(WPPLIB)	people.obj	people.res
+randrect.exe:	$(WPPLIB)	randrect.obj randrect.res
+toe.exe:			$(WPPLIB)	toe.obj		toe.res
+winedit.exe:	$(WPPLIB)	winedit.obj	winedit.res
+draw.exe:		$(WPPLIB)	draw.obj		draw.res
+memtest.exe:	$(WPPLIB)	memtest.obj memtest.res
+
+hello.obj:		prefix.obj hello.cpp
+launch.obj:		prefix.obj launch.cpp
+mandel.obj:		prefix.obj mandel.cpp	mandel.h complex.h
+medit.obj:		prefix.obj medit.cpp
+mkc.obj:			prefix.obj mkc.cpp
+people.obj:		prefix.obj people.cpp	people.h
+randrect.obj:	prefix.obj randrect.cpp
+toe.obj:			prefix.obj toe.cpp
+winedit.obj:	prefix.obj winedit.cpp
+draw.obj:		prefix.obj draw.cpp	draw.h
+memtest.obj:	prefix.obj memtest.cpp	

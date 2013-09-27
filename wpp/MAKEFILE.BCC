@@ -1,0 +1,79 @@
+# Windows++ Makefile for BORLAND 5.0
+# (C) Paul DiLascia 1996.
+# 
+# To build Windows++, issue one of the following DOS commands.
+#
+
+!ifdef DEBUG
+CFLAGS = -N -v -D_DEBUG
+LFLAGS = -v
+!else
+CFLAGS = -O2
+LFLAGS = 
+!endif
+
+!ifdef DLL
+TARGET = wpp.dll
+DLLFLAGS = -DWPPDLL
+APPFLAGS = -DUSEDLL
+!else
+TARGET = wpp.lib
+DLLFLAGS = 
+APPFLAGS =
+!endif
+
+CL = bcc32.exe
+LINK = bcc32.exe
+CFLAGS = -I"c:\Borland\Bcc55\include" $(CFLAGS) -tW -c -w-par -DWIN32_LEAN_AND_MEAN
+LFLAGS = -L"c:\Borland\Bcc55\lib" $(LFLAGS) -tWD -lV4.0
+
+WPPOBJ = wpapp.obj wpctrl.obj wpdlfile.obj wpdlg.obj wpdlprt.obj \
+	wpdlstr.obj wpgdi.obj wpglob.obj wpmain.obj wpmdi.obj \
+	wpmenu.obj wpodraw.obj wprect.obj wpwin.obj gpp.obj 
+
+default: $(TARGET)
+
+wpp.dll: $(WPPOBJ) dllmain.obj winmain.obj
+	$(LINK) -ewpp.dll $(LFLAGS) dllmain.obj @&&!
+$(WPPOBJ)
+!
+	implib wpp.lib wpp.dll
+	tlib $*.lib /C +winmain
+	del $*.bak
+
+wpp.lib: $(WPPOBJ) winmain.obj
+	del wpp.lib
+	tlib wpp.lib/C @&&!
+	+winmain.obj+wpapp.obj+wpctrl.obj+wpdlfile.obj+wpdlg.obj &
+	+wpdlprt.obj+wpdlstr.obj+wpgdi.obj+wpglob.obj &
+	+wpmain.obj+wpmdi.obj+wpmenu.obj+wpodraw.obj+wprect.obj &
+	+wpwin.obj+gpp.obj 
+	wpp.lst;
+!
+
+.cpp.obj:
+	$(CL)  $(CFLAGS) $(DLLFLAGS) {$* } 
+
+# Compile winmain as app
+winmain.obj : winmain.cpp wpp.h 
+	$(CL) " $(CFLAGS) $(APPFLAGS) $*.cpp 
+
+clean:
+	-del *.obj *.map *.lst *.lib *.dll *.exp *.pdb *.ilk *.pch
+
+gpp.obj 		: wpp.h gpp.h gpp.cpp
+libmain.obj : wpp.h libmain.cpp
+wpapp.obj 	: wpp.h wpapp.cpp
+wpctrl.obj 	: wpp.h wpctrl.cpp
+wpdlfile.obj: wpp.h wpdlfile.cpp
+wpdlg.obj 	: wpp.h wpdlg.cpp
+wpdlprt.obj : wpp.h wpdlprt.cpp
+wpdlstr.obj : wpp.h wpdlstr.cpp
+wpgdi.obj 	: wpp.h wpgdi.cpp
+wpglob.obj 	: wpp.h wpglob.cpp
+wpmain.obj 	: wpp.h wpmain.cpp
+wpmdi.obj 	: wpp.h wpmdi.cpp
+wpmenu.obj 	: wpp.h wpmenu.cpp
+wpodraw.obj : wpp.h wpodraw.cpp
+wprect.obj 	: wpp.h wprect.cpp
+wpwin.obj 	: wpp.h wpwin.cpp

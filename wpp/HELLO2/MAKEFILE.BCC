@@ -1,0 +1,33 @@
+# Makefile for HELLO2.CPP
+# Copyright 1992,1996 Paul DiLascia
+#
+
+CL = bcc32.exe
+RC = brc32.exe
+LINK = bcc32.exe
+CFLAGS= -c -w-par -tW -DWIN32_LEAN_AND_MEAN 
+LFLAGS= -tW
+WPPOBJ = wpwin.obj wpapp.obj wpmain.obj winmain.obj
+
+.cpp.obj:
+	$(CL) $(CFLAGS) $<
+
+.rc.res:
+	$(RC) -r $<
+
+hello2.exe: wpp.lib hello2.obj hello2.res
+	$(LINK) $(LFLAGS) hello2.obj wpp.lib 
+	$(RC) hello2.res
+
+wpp.lib: $(WPPOBJ)
+	del wpp.lib
+	tlib wpp.lib /c +wpwin+wpapp+wpmain+winmain
+
+clean:
+	del *.obj *.exe *.res
+
+hello2.obj : wpp.h wprect.h wppoint.h  wpapp.h wpwin.h wpmain.h hello2.cpp
+wpapp.obj : wpmain.h wpwin.h wprect.h wppoint.h wppdefs.h wpapp.h wpapp.cpp
+wpmain.obj : wpmain.h wpwin.h wprect.h wppoint.h wppdefs.h wpapp.h wpmain.cpp
+wpwin.obj : wpwin.h wprect.h wppoint.h wppdefs.h wpapp.h wpwin.cpp
+winmain.obj : wpapp.h wpwin.h wprect.h wppoint.h wppdefs.h winmain.cpp

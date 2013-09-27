@@ -1,0 +1,26 @@
+# Makefile for HELLO1.CPP
+# Copyright 1992,1996 Paul DiLascia
+#
+
+CL = cl.exe
+RC = rc.exe
+LINK = link.exe
+CFLAGS = /c /GA /DWIN32_LEAN_AND_MEAN 
+LFLAGS =
+
+WINLIBS = KERNEL32.LIB USER32.LIB GDI32.LIB
+
+.cpp.obj:
+	$(CL) $(CFLAGS) $<
+
+.rc.res:
+	$(RC) -r $<
+
+hello1.exe: wpwin.obj hello1.obj hello1.res
+	$(LINK) /SUBSYSTEM:windows hello1.obj hello1.res wpwin.obj $(WINLIBS)
+
+hello1.obj : hello1.cpp
+wpwin.obj : wpwin.h wprect.h wppdefs.h wpwin.cpp
+
+clean:
+	del *.obj *.exe *.res

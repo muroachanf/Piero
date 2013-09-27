@@ -1,0 +1,53 @@
+# Makefile for sample DLL applications
+# Copyright 1992,1996,1996 Paul DiLascia
+#
+
+CL=cl.exe
+CFLAGS = /GA /c /W3 /DWIN32_LEAN_AND_MEAN 
+DLLFLAGS= -DWPPDLL
+APPFLAGS= -DUSEDLL
+LINK = link.exe
+LFLAGS = /SUBSYSTEM:windows
+WPPOBJ = wpwin.obj wpapp.obj wpmain.obj winmain.obj
+WINLIBS = KERNEL32.LIB USER32.LIB GDI32.LIB
+
+all: prog.exe app.exe
+
+.cpp.obj:
+	$(CL) $(CFLAGS) $<
+
+.rc.res:
+	RC -r $<
+
+prog.exe: prog.obj msgbox.lib msgbox.dll
+	$(LINK) $(LFLAGS) prog.obj msgbox.lib $(WINLIBS)
+
+prog.obj: prog.cpp msgbox.h
+	$(CL) $(CFLAGS) $(APPFLAGS) prog.cpp
+
+msgbox.lib: msgbox.obj
+	lib /DEF: msgbox.obj
+
+msgbox.obj: msgbox.cpp msgbox.h
+	$(CL) $(CFLAGS) $(DLLFLAGS) msgbox.cpp
+
+msgbox.dll: msgbox.obj
+	$(LINK) /DLL msgbox.obj $(WINLIBS)
+
+app.exe: app.obj wppdll.lib wppdll.dll
+	$(LINK) $(LFLAGS) app.obj wppdll.lib $(WINLIBS)
+
+app.obj: app.cpp wppdll.h
+	$(CL) $(CFLAGS) $(APPFLAGS) app.cpp
+
+wppdll.lib: wppdll.obj
+	lib /DEF: wppdll.obj
+
+wppdll.obj: wppdll.cpp wppdll.h
+	$(CL) $(CFLAGS) $(DLLFLAGS) wppdll.cpp
+
+wppdll.dll: wppdll.obj
+	$(LINK) -DLL wppdll.obj $(WINLIBS)
+
+clean:
+	del *.obj *.dll *.exe *.lib *.exp

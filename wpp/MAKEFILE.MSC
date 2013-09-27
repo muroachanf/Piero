@@ -1,0 +1,85 @@
+# Windows++ Makefile for MSC/C++
+# (C) Paul DiLascia 1992.
+#       
+# To build:
+# 	nmake -fmakefile.msc [DEBUG=1] [DLL=1]
+#
+
+!ifdef DEBUG
+CFLAGS = /Gs /Zi /D_DEBUG
+LFLAGS = /DEBUG /DEBUGTYPE:CV 
+!else
+CFLAGS = /O2
+LFLAGS = 
+!endif
+
+!ifdef DLL
+TARGET = wpp.dll
+DLLFLAGS = -DWPPDLL
+APPFLAGS = -DUSEDLL
+LIBFLAGS = /DEF:
+!else
+TARGET = wpp.lib
+DLLFLAGS = 
+APPFLAGS =
+LIBFLAGS = 
+!endif
+
+CL = cl.exe
+LINK = link.exe
+CFLAGS = $(CFLAGS) /GA /c /W3 /DWIN32_LEAN_AND_MEAN 
+LFLAGS = $(LFLAGS) /DLL /SUBSYSTEM:windows /machine:IX86
+
+CPPCREATEPCHFLAG = /YcWPP.H
+CPPUSEPCHFLAG = /YuWPP.H 
+
+WINLIBS = KERNEL32.LIB USER32.LIB GDI32.LIB COMDLG32.LIB
+
+WPPOBJ = prefix.obj wpapp.obj wpctrl.obj wpdlfile.obj wpdlg.obj wpdlprt.obj \
+	wpdlstr.obj wpgdi.obj wpglob.obj wpmain.obj wpmdi.obj \
+	wpmenu.obj wpodraw.obj wprect.obj wpwin.obj gpp.obj 
+
+default: $(TARGET)
+
+wpp.dll: $(WPPOBJ) dllmain.obj winmain.obj
+	$(LINK) $(LFLAGS) dllmain.obj $(WPPOBJ) $(WINLIBS) /OUT:wpp.dll
+	ren wpp.lib _foo.lib
+	lib _foo.lib winmain.obj /out:wpp.lib
+	del _foo.lib
+
+wpp.lib: $(WPPOBJ) winmain.obj
+	-del wpp.lib
+	lib $(LIBFLAGS) @<<
+	/out:"wpp.lib" $(WPPOBJ) winmain.obj
+<<
+
+.cpp.obj:
+	$(CL) $(CFLAGS) $(DLLFLAGS) $(CPPUSEPCHFLAG) $<
+
+prefix.obj: prefix.cpp wpp.h
+	$(CL) $(CFLAGS) $(DLLFLAGS) $(CPPCREATEPCHFLAG) $*.cpp
+
+# Compile winmain as app
+winmain.obj : winmain.cpp wpp.h 
+	$(CL) $(CFLAGS) $(APPFLAGS) $*.cpp
+
+clean:
+	-del *.obj *.map *.lst *.lib *.dll *.exp *.pdb *.ilk *.pch
+
+gpp.obj 		: wpp.h gpp.h gpp.cpp
+libmain.obj : wpp.h libmain.cpp
+wpapp.obj 	: wpp.h wpapp.cpp
+wpctrl.obj 	: wpp.h wpctrl.cpp
+wpdlfile.obj: wpp.h wpdlfile.cpp
+wpdlg.obj 	: wpp.h wpdlg.cpp
+wpdlprt.obj : wpp.h wpdlprt.cpp
+wpdlstr.obj : wpp.h wpdlstr.cpp
+wpgdi.obj 	: wpp.h wpgdi.cpp
+wpglob.obj 	: wpp.h wpglob.cpp
+wpmain.obj 	: wpp.h wpmain.cpp
+wpmdi.obj 	: wpp.h wpmdi.cpp
+wpmenu.obj 	: wpp.h wpmenu.cpp
+wpodraw.obj : wpp.h wpodraw.cpp
+wprect.obj 	: wpp.h wprect.cpp
+wpwin.obj 	: wpp.h wpwin.cpp
+
