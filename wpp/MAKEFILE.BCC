@@ -24,8 +24,8 @@ APPFLAGS =
 
 CL = bcc32.exe
 LINK = bcc32.exe
-CFLAGS = -I"c:\Borland\Bcc55\include" $(CFLAGS) -tW -c -w-par -DWIN32_LEAN_AND_MEAN
-LFLAGS = -L"c:\Borland\Bcc55\lib" $(LFLAGS) -tWD -lV4.0
+CFLAGS = $(CFLAGS) -tW -c -w-par -DWIN32_LEAN_AND_MEAN -I"c:\Borland\Bcc55\include"
+LFLAGS = $(LFLAGS) -tWD -lV4.0 -L"c:\Borland\Bcc55\lib"
 
 WPPOBJ = wpapp.obj wpctrl.obj wpdlfile.obj wpdlg.obj wpdlprt.obj \
 	wpdlstr.obj wpgdi.obj wpglob.obj wpmain.obj wpmdi.obj \
@@ -52,11 +52,11 @@ wpp.lib: $(WPPOBJ) winmain.obj
 !
 
 .cpp.obj:
-	$(CL)  $(CFLAGS) $(DLLFLAGS) {$* } 
+	$(CL) $(CFLAGS) $(DLLFLAGS) {$* }
 
 # Compile winmain as app
 winmain.obj : winmain.cpp wpp.h 
-	$(CL) " $(CFLAGS) $(APPFLAGS) $*.cpp 
+	$(CL) $(CFLAGS) $(APPFLAGS) $*.cpp
 
 clean:
 	-del *.obj *.map *.lst *.lib *.dll *.exp *.pdb *.ilk *.pch

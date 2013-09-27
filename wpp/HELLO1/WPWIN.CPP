@@ -24,7 +24,7 @@ WPWin::WPWin(CSTR classnm)
 	createArgs.wndcls.hInstance = NULL;
 	createArgs.wndcls.hIcon = NULL;
 	createArgs.wndcls.hCursor = LoadCursor(NULL, IDC_ARROW);
-	createArgs.wndcls.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
+	createArgs.wndcls.hbrBackground = GetStockObject(WHITE_BRUSH);
 	createArgs.wndcls.lpszMenuName = NULL;
 
 	// set default creation args
@@ -49,7 +49,7 @@ BOOL WPWin::createWin()
 	WNDCLASS temp;
 
 	// Register window class if it ain't already registered!
-	if (!GetClassInfo((HINSTANCE )hinst, classnm, &temp) &&	// try module..
+	if (!GetClassInfo(hinst, classnm, &temp) &&	// try module..
 		!GetClassInfo(NULL, classnm, &temp)) {		// ..and built-in
 
 		BOOL ret = RegisterClass(&createArgs.wndcls);
@@ -68,7 +68,7 @@ BOOL WPWin::createWin()
 		createArgs.pos.height(),
 		WPWin::GetHwnd(createArgs.parent),
 		createArgs.hmenu, 
-		(HINSTANCE)hinst,
+		hinst,
 		createArgs.lparam);
 
 	assert(newhwnd);

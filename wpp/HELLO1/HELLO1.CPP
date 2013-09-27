@@ -29,9 +29,9 @@ public:
 HelloWin::HelloWin(HANDLE hinst) : WPWin("HELLOWIN")
 {
 	createArgs.wndcls.lpfnWndProc = WndProc;
-	createArgs.wndcls.hInstance = (HINSTANCE)hinst;
+	createArgs.wndcls.hInstance = hinst;
 	createArgs.wndcls.lpszMenuName = "HelloMenu";
-	createArgs.wndcls.hIcon = LoadIcon((HINSTANCE)hinst, "HelloIcon");
+	createArgs.wndcls.hIcon = LoadIcon(hinst, "HelloIcon");
 	createArgs.style = WS_OVERLAPPEDWINDOW;
 	createWin("HELLO1--1st C++ version");
 }

@@ -157,7 +157,7 @@
 #include <commdlg.h>
 
 
-const  MAXINT = 0x7fff;
+const MAXINT = 0x7fff;
 const MAXFILENAMELEN = 128;
 const MAXSTRLEN = 256;
 
