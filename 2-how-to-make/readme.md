@@ -35,28 +35,28 @@ THEN
 是这样的。我想把这两个命令合并为一个
 就是
 
-  echo digraph abc{a;b;a-^>b;} >simplest.dot
-  dot -Tpng simplest.dot -o 1.png
+      echo digraph abc{a;b;a-^>b;} >simplest.dot
+      dot -Tpng simplest.dot -o 1.png
 
 搞成这样的：
 
-  echo digraph abc{a;b;a-^>b;} |  dot -Tpng simplest.dot -o 1.png
+      echo digraph abc{a;b;a-^>b;} |  dot -Tpng simplest.dot -o 1.png
 
 实际上不行。因为尽管 "^>" 做了转义(^是转义符号)，但是在有"|"的情况下，cmd断句显然出现了问题。
 
 把dot换成more来调试可以发现管道什么也没有传过来。
 
-  $echo digraph abc{a;b;a-^>b;} |  more
+      $echo digraph abc{a;b;a-^>b;} |  more
 
 标引可以过来，但是多了”，人家dot不认。
 
-   $echo "digraph abc{a;b;a->b;}" |  more
-   "digraph abc{a;b;a->b;}"   
+      $echo "digraph abc{a;b;a->b;}" |  more
+      "digraph abc{a;b;a->b;}"   
 
 最后，有去看了鬼怪的bat语法，比如FOR命令。太丑陋了，晚上没有睡好。
 第二天灯泡时刻突袭了我。带命令一起标引：
 
-    cmd /c "echo digraph abc{a;b;a-^>b;}" |  dot -Tpng  -o 1.png
+      cmd /c "echo digraph abc{a;b;a-^>b;}" |  dot -Tpng  -o 1.png
 
 cmd正确的做了断句。虽然用""做了quoted ,但是 Esc 转义还是必要的。
 
