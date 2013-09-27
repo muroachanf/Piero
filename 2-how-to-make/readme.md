@@ -23,7 +23,9 @@ THEN
 
 这样，可视化这个[make](GnuMakefile)也就简单。
 
-[结果](deps.dot)。
+[蓝图](deps.dot)。
+
+![成果](deps.png)
 
 
 -------------------
