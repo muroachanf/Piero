@@ -100,32 +100,36 @@ WINDOWS++ ,我来了。
 
 -----
 
-###more tricks 
+### more tricks 
 
 How do I create a multiline text file with Echo in Windows command prompt?
 
 There are three ways.
 Append each line using >>:
-C:\Users\Elias>echo foo > a.txt
-C:\Users\Elias>echo bar >> a.txt
+
+      #echo foo > a.txt
+      #echo bar >> a.txt
 
 Use parentheses to echo multiple lines:
-C:\Users\Elias>(echo foo
-More? echo bar) > a.txt
+      #(echo foo
+      More? echo bar) > a.txt
 
 Type caret (^) and hit ENTER twice after each line to continue adding lines:
-C:\Users\Elias>echo foo^
-More?
-More? bar > a.txt
+      #echo foo^
+      More?
+      More? bar > a.txt
 
 All the above produce the same file:
-C:\Users\Elias>type a.txt
-foo
-bar
+      #type a.txt
+      foo
+      bar
 
-C:'>copy con SN.txt
-Product Key: TJQAW-VG29Y-G194Y-E7KRT-BYH9G
+      C:'>copy con SN.txt
+      Product Key: TJQAW-VG29Y-G194Y-E7KRT-BYH9G
 
-^Z
- 1 file(s) copied.
+      ^Z
+       1 file(s) copied.
 
+#### cmd escape chars
+
+      http://www.robvanderwoude.com/escapechars.php
