@@ -1,0 +1,1 @@
+cmd /c "echo digraph abc{a;b;a->b;}" |  dot -Tpng  -o 1.png

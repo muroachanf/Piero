@@ -48,14 +48,29 @@ THEN
 最后，有去看了鬼怪的bat语法，比如FOR命令。太丑陋了，晚上没有睡好。
 第二天灯泡时刻突袭了我。带命令一起标引：
 
-  cmd /c "echo digraph abc{a;b;a->b;}" |  more
+  cmd /c "echo digraph abc{a;b;a-^>b;}" |  dot -Tpng  -o 1.png
 
-cmd正确的做了断句。因为用""做了quoted ,因此Esc 转义就不在必要，^可以也必须删除。
+cmd正确的做了断句。虽然用""做了quoted ,但是 Esc 转义还是必要的。
 
 并且，可读性很好哦。
 
 坑人。原因在于文本得人看得懂，还不能二义，人类的限制。
 
+神对比：
+  1. 可以echo
+  $cmd /c "echo digraph abc{a;b;a-^>b;}" 
+  digraph abc{a;b;a->b;}
+  2. 可以more
+  $cmd /c "echo digraph abc{a;b;a-^>b;}" |more
+  digraph abc{a;b;a->b;}
+  
+  3. 可以echo
+  $echo digraph abc{a;b;a-^>b;} 
+  digraph abc{a;b;a->b;}
+  4. 不能more
+  $echo digraph abc{a;b;a-^>b;} |more
+
+到处都是坑的bat。  
 
 dot命令是什么？
      graphviz的命令行版本
