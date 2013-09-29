@@ -485,7 +485,7 @@ protected:
 	void makeIniFileName(char *buf);
 
 	friend int PASCAL WinMain(HINSTANCE, HINSTANCE, LPSTR, int);
-	friend WPMDIClient;
+	friend class WPMDIClient;
 public:
 	char scratch[1024];			// transient buffer anyone can use
 
@@ -596,10 +596,10 @@ protected:
 
 	friend BOOL		CALLBACK WPDlgProc(HWND, UINT, WPARAM, LPARAM);
 	friend LRESULT	CALLBACK WPWndProc(HWND, UINT, WPARAM, LPARAM);
-	friend WPDialog;
-	friend WPControl;
-	friend WPMDIChild;
-	friend WPMDIFrame;
+	friend class WPDialog;
+	friend class WPControl;
+	friend class WPMDIChild;
+	friend class WPMDIFrame;
 
 public:
 	WPWin(LPCSTR classnm, WPWin* pwin=NULL, int id=0);
@@ -1046,7 +1046,7 @@ protected:
 	LPCSTR fnFilter;			// file name filter
 	BOOL modified;				// whether file modified
 	BOOL fileKillConfirm();	// do file confirmation
-	friend WPMDIChild;
+	friend class WPMDIChild;
 
 protected:
 	WPWin *promptWin;			// menu prompt window
@@ -1115,7 +1115,7 @@ DLLCLASS WPControl : public WPWin {
 protected:
 	void linkObject(void *obj, int siz) { object=obj; objsiz=siz; }
 	BOOL tryLink();
-	friend WPDialog;
+	friend class WPDialog;
 
 	void *object;				// pointer to unknown object
 	int objsiz;					// size of object
@@ -1581,7 +1581,7 @@ struct WPControlMap {
 	int id;						// control ID
 	int offset;					// offset of data
 	int len;						// length of data
-	friend WPDialog;
+	friend class WPDialog;
 };
 
 //////////////////
@@ -1671,7 +1671,7 @@ public:
 // 
 DLLCLASS WPDialogModeless : public WPDialog {
 	WPDialogModeless* next;	// next modeless dlg in app
-	friend WPApp;
+	friend class WPApp;
 public:
 	WPDialogModeless(LPCSTR resname, WPWin *pwin=NULL, 
 		WPControlMap *map=NULL, void *obj=NULL);
@@ -1930,7 +1930,7 @@ protected:
 	WPDrawObj(HGDIOBJ h, BOOL d)	{ set(h, d); }
 	~WPDrawObj()						{ destroy(); }
 
-	friend WPDevContext;
+	friend class WPDevContext;
 public:
 	HGDIOBJ operator()()				{ return hobj; }
 	operator HGDIOBJ()				{ return hobj; }
@@ -2383,7 +2383,7 @@ DLLCLASS WPPrinter : public WPDevContext {
 	BOOL delDC;					// delete DC?
 
 	friend BOOL CALLBACK WPPrintAbortProc(HDC hdcPrn, int nCode);
-	friend WPDlgPrintAbort;
+	friend class  WPDlgPrintAbort;
 public:	
 	WPPrinter(LPCSTR devname=NULL, DEVMODE* devmode=NULL);
 	WPPrinter(WPDlgPrint& pdlg);
@@ -2456,7 +2456,7 @@ protected:
 
 	WPMDIChild* activeWin()
 		{ return (WPMDIChild*)GetWin((HWND)LOWORD(sendMsg(WM_MDIGETACTIVE))); }
-	friend WPMDIFrame;
+	friend class  WPMDIFrame;
 };
 
 //////////////////
@@ -2487,8 +2487,8 @@ public:
 DLLCLASS WPMDIFrame : public WPMainWin {
 	WPMDIClient *client;		// ptr to client window
 	int winMenuPos;			// relative pos of "Window" menu
-	friend WPMDIClient;
-	friend WPMDIChild;
+	friend class WPMDIClient;
+	friend class WPMDIChild;
 public:	
 	WPMDIFrame(int winMenu, LPCSTR classnm = "MDIFRAME");
 	~WPMDIFrame()					{ closeAll(TRUE); }
