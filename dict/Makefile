@@ -4,7 +4,7 @@ _include=-Ishare
 gcc=g++
 _head=hwnd_file.h share/logger.h share/common.h
 
-default: dict
+default: dict.exe
 dict.o: dict.c $(_head)
 	$(gcc) -c dict.c -o dict.o $(_flag) $(_include)
 common.o: share/common.c 
@@ -13,7 +13,7 @@ logger.o: share/logger.c
 	$(gcc) -c share/logger.c  $(_flag) $(_include)
 hwnd_file.o:hwnd_file.c 
 	$(gcc) -c hwnd_file.c  $(_flag) $(_include)  
-dict: dict.o common.o logger.o hwnd_file.o
+dict.exe: dict.o common.o logger.o hwnd_file.o
 	$(gcc)   dict.o common.o logger.o hwnd_file.o -o dict $(_lib)  -mwindows -static $(_flag) -s
 clean: 
 	rm -f *.o

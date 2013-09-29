@@ -101,8 +101,33 @@ void on_create(HWND  hwnd){
     create_link(TRUE);
     // create_button(L"退出",20, 80, 80, 25,hwnd, id_quit);      
 }
+// void setClipboard(char* text) {
+//     HGLOBAL x;
+//     char *y;
+//     x = GlobalAlloc(GMEM_DDESHARE|GMEM_MOVEABLE, mem);
+//     y = (char*)GlobalLock(x);
+//     strcpy(y, text);
+//     GlobalUnlock(x);
+//     OpenClipboard(NULL);
+//     EmptyClipboard();
+//     SetClipboardData(CF_TEXT, x);
+//     CloseClipboard();
+// }
+
+char* getClipboard() {
+    OpenClipboard(NULL);
+    HANDLE pText = GetClipboardData(CF_TEXT);
+    CloseClipboard();
+    LPVOID text = GlobalLock(pText);
+    return (char*)text;
+}
 void on_activate(HWND  hwnd){  
   SetFocus(GetDlgItem(hwnd,id_edit));
+  char* content = getClipboard();
+  HWND hwnd1 = get_rootwindow();
+  HWND hwndedit = GetDlgItem(hwnd1,id_edit); 
+  SetWindowText(hwndedit,content);
+  on_enter();
 }
 
 void on_destroy(HWND  hwnd){  

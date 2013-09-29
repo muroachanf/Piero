@@ -26,6 +26,8 @@ LRESULT DLLFUNC CALLBACK WPWndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 	assert(win);
 
 	if (msg==WM_DESTROY) {	// got WM_DESTROY:
+		// delete win;
+		// win = NULL;
 		if (win->deletable)
 			delete win;			// call virtual destructor
 		else

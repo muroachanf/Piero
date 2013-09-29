@@ -621,8 +621,8 @@ public:
 	static TEXTMETRIC tm;				// text metrics for last created window
 
 	// Overloaded new & delete
-	void *operator new(size_t size);
-	void operator delete(void *ptr);
+	// void *operator new(size_t size);
+	// void operator delete(void *ptr);
 
 	// Get handles/win ptr
 	HWND getHwnd()							{ return hwnd; }

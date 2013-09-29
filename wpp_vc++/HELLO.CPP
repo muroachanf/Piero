@@ -20,5 +20,7 @@ public:
 void MyApp::main()
 {
 	mainWin = new HelloWin;
+	// HelloWin m;
+ //    mainWin = &m;
 	run();
 }
