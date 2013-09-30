@@ -1,0 +1,1 @@
+LRESULT DoDebugDialog(HWND hwndApp, LPVOID pvData);

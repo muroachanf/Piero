@@ -31,7 +31,8 @@ int create_class(HINSTANCE hInst,char* AppTitle,WNDPROC  WindowProc){
 	wc.hInstance=hInst; 
 	wc.hIcon=LoadIcon(NULL,IDI_WINLOGO); 
 	wc.hCursor=LoadCursor(NULL,IDC_ARROW); 
-	wc.hbrBackground=(HBRUSH)COLOR_WINDOWFRAME; 
+	// wc.hbrBackground=(HBRUSH)COLOR_WINDOWFRAME; 
+  wc.hbrBackground=(HBRUSH)GetSysColorBrush(COLOR_3DFACE);
 	wc.lpszMenuName=NULL; 
 	wc.lpszClassName=AppTitle; 
 	if (!RegisterClass(&wc)) 

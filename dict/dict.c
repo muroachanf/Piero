@@ -17,6 +17,9 @@ g++.exe -mwindows 2.c share/l.c share/logger.c -o 2  -static -Wno-write-strings 
 #include "common.h"
 #include "logger.h"
 #include "hwnd_file.h"
+#include "about_dlg.h"
+#include "about_dialogbox.h"
+
 
 int WinMain(HINSTANCE hInst,HINSTANCE,LPSTR,int nCmdShow) 
 {   
@@ -34,7 +37,7 @@ const int id_edit = 5;
 const int id_query = 1;
 const int id_quit = 2;
 const int id_static = 3;
-
+const int id_about = 6;
 void on_enter(){
        HWND hwnd = get_rootwindow();
        HWND hwndedit = GetDlgItem(hwnd,id_edit);              
@@ -72,9 +75,16 @@ LRESULT CALLBACK MyEditProc(HWND hDlg, UINT message,WPARAM wParam, LPARAM lParam
   }
   return( (LRESULT)CallWindowProc((WNDPROC)DefEditProc,hDlg,message,wParam,lParam) );
 }
+void on_about(HWND hwnd){
+  // create_dlg(GetModuleHandle(NULL),hwnd);
+  DoDebugDialog(hwnd,NULL);
+}
 void on_click(int id,HWND hwnd){      
     if(id==id_query){
        on_enter();
+    }else 
+    if(id==id_about){
+       on_about(hwnd);
     }else{
        PostQuitMessage(0);
     }
@@ -93,14 +103,19 @@ void on_paint(HWND hwnd){
 const int _hotkey_id =100;
 BOOL _hotkey_id_fail = FALSE;
 void on_create(HWND  hwnd){    
+    // _log("1");
     HWND hwndedit = create_edit(L"cat",20, 20, 350, 40,hwnd, id_edit);        
     create_label(L"准备...",20, 60, 350, 40,hwnd, id_static);
-    create_button(L"查询",20, 100, 350, 25,hwnd, id_query);
+    create_button(L"查询",20, 100, 300, 25,hwnd, id_query);
+    // _log("2");
+    create_button(L"?",320, 100, 50, 25,hwnd, id_about);
+    // _log("3");
     DefEditProc = (WNDPROC)GetWindowLong(hwndedit,GWL_WNDPROC);
     SetWindowLong(hwndedit,GWL_WNDPROC,(long)MyEditProc);
     SetFocus(hwndedit);
     create_link(TRUE);
-    if (0==RegisterHotKey(hwnd, _hotkey_id,MOD_ALT, VK_SPACE)){
+    register_dlg(GetModuleHandle(NULL), hwnd);
+    if (0==RegisterHotKey(hwnd, _hotkey_id,MOD_CONTROL, 0X4D)){
       UnregisterHotKey(hwnd,_hotkey_id);
       _log("RegisterHotKey failure!");
       // *(&_hotkey_id) = 0;
