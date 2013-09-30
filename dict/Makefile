@@ -15,9 +15,10 @@ hwnd_file.o:hwnd_file.c
 	$(gcc) -c hwnd_file.c  $(_flag) $(_include)  
 dict.exe: dict.o common.o logger.o hwnd_file.o
 	$(gcc)   dict.o common.o logger.o hwnd_file.o -o dict $(_lib)  -mwindows -static $(_flag) -s
-clean: 
-	rm -f *.o
-
+clean: 	
+	rm -f *.o	
+	rm piero.txt
+	rm hwnd.txt
 
 # test 	
 4.o:test/4.c
