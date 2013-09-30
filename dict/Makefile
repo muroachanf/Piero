@@ -1,5 +1,5 @@
 _flag=-Wno-write-strings
-_lib=-lws2_32 -lole32 -luuid -lShlwapi
+_lib=-lws2_32 -lole32 -luuid -lShlwapi -lcomctl32
 _include=-Ishare
 gcc=g++
 _head=hwnd_file.h share/logger.h share/common.h about_dlg.h burning_ctl.h about_dialogbox.h
@@ -22,8 +22,11 @@ about_dialogbox.o:about_dialogbox.c
 	$(gcc) -c about_dialogbox.c  $(_flag) $(_include)  
 about_dlg.o:about_dlg.c  burning_ctl.o
 	$(gcc) -c about_dlg.c  $(_flag) $(_include)  
-dict.exe: dict.o common.o logger.o hwnd_file.o about_dlg.o burning_ctl.o about_dialogbox.o
-	$(gcc)   dict.o common.o logger.o hwnd_file.o  about_dlg.o  burning_ctl.o about_dialogbox.o -o dict $(_lib)  -mwindows -static $(_flag) -s
+resource.o: about_rc.rc Application.ico resource.h
+	windres  -I. -i about_rc.rc -o resource.o
+dict.exe: dict.o common.o logger.o hwnd_file.o about_dlg.o burning_ctl.o about_dialogbox.o resource.o
+	$(gcc)   dict.o common.o logger.o hwnd_file.o  about_dlg.o  burning_ctl.o about_dialogbox.o resource.o -o dict $(_lib)  -mwindows -static $(_flag) -s
+
 clean: 	
 	rm -f *.o	
 	rm piero.txt

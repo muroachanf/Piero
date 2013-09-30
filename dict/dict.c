@@ -19,7 +19,7 @@ g++.exe -mwindows 2.c share/l.c share/logger.c -o 2  -static -Wno-write-strings 
 #include "hwnd_file.h"
 #include "about_dlg.h"
 #include "about_dialogbox.h"
-
+#include "resource.h"
 
 int WinMain(HINSTANCE hInst,HINSTANCE,LPSTR,int nCmdShow) 
 {   
@@ -75,9 +75,42 @@ LRESULT CALLBACK MyEditProc(HWND hDlg, UINT message,WPARAM wParam, LPARAM lParam
   }
   return( (LRESULT)CallWindowProc((WNDPROC)DefEditProc,hDlg,message,wParam,lParam) );
 }
+
+INT_PTR CALLBACK AboutDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+  switch (uMsg)
+  {
+    case WM_COMMAND:
+    {
+      switch (LOWORD(wParam))
+      {
+        case IDOK:
+        case IDCANCEL:
+        {
+          EndDialog(hwndDlg, (INT_PTR) LOWORD(wParam));
+          return (INT_PTR) TRUE;
+        }
+      }
+      break;
+    }
+
+    case WM_INITDIALOG:
+    {
+      _log("WM_INITDIALOG");
+      return (INT_PTR) TRUE;
+    }
+  }
+
+  return (INT_PTR) FALSE;
+}
+
 void on_about(HWND hwnd){
+  // modal less
   // create_dlg(GetModuleHandle(NULL),hwnd);
-  DoDebugDialog(hwnd,NULL);
+  // do template
+  // DoDebugDialog(hwnd,NULL);
+  // and resource
+   DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_ABOUTDIALOG), hwnd, &AboutDialogProc);
 }
 void on_click(int id,HWND hwnd){      
     if(id==id_query){
