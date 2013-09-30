@@ -24,7 +24,7 @@ int create_class(HINSTANCE hInst,char* AppTitle,WNDPROC  WindowProc){
 	HWND hwnd; 
 	MSG msg; 
 
-	wc.style=CS_HREDRAW | CS_VREDRAW; 
+	wc.style=CS_HREDRAW | CS_VREDRAW|WS_EX_TOOLWINDOW; 
 	wc.lpfnWndProc=WindowProc; 
 	wc.cbClsExtra=0; 
 	wc.cbWndExtra=0; 
@@ -39,11 +39,9 @@ int create_class(HINSTANCE hInst,char* AppTitle,WNDPROC  WindowProc){
 }
 HWND  create_win(HINSTANCE hInst,char* AppTitle,int nCmdShow,int x,int y,int w,int h){
   // DWORD style = WS_OVERLAPPEDWINDOW ;
-  DWORD style = WS_OVERLAPPED  | WS_SYSMENU | WS_THICKFRAME  ;
-	HWND hwnd = CreateWindow(AppTitle,AppTitle, 
-	    style, 
-	    x,y,w,h,
-	    NULL,NULL,hInst,NULL); 
+  DWORD style = WS_OVERLAPPED  | WS_SYSMENU | WS_THICKFRAME | WS_EX_TOOLWINDOW ;
+	// HWND hwnd = CreateWindow(AppTitle,AppTitle, style, x,y,w,h,NULL,NULL,hInst,NULL); 
+  HWND hwnd = CreateWindowEx(WS_EX_TOOLWINDOW,AppTitle,AppTitle, style, x,y,w,h,NULL,NULL,hInst,NULL); 
 	// ::SendMessage(hwnd, WM_SETFONT, (WPARAM)::GetStockObject(DEFAULT_GUI_FONT), MAKELPARAM(FALSE, 0));
 
 	ShowWindow(hwnd,nCmdShow); 

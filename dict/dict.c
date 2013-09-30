@@ -25,7 +25,7 @@ int WinMain(HINSTANCE hInst,HINSTANCE,LPSTR,int nCmdShow)
 	char *title="Dictionary"; 
 	if (0==create_class(hInst,title,WindowProc))
 		return 0;  
-	HWND hwnd = create_win(hInst,title,nCmdShow,CW_USEDEFAULT,CW_USEDEFAULT,400,180);	
+	HWND hwnd = create_win(NULL,title,nCmdShow,CW_USEDEFAULT,CW_USEDEFAULT,400,180);	
   hwnd_write(hwnd);  
 	loop(hwnd); 
 } 
@@ -38,7 +38,7 @@ const int id_static = 3;
 void on_enter(){
        HWND hwnd = get_rootwindow();
        HWND hwndedit = GetDlgItem(hwnd,id_edit);              
-       _log("logger %d %d",hwnd,hwndedit);
+       // _log("logger %d %d",hwnd,hwndedit);
        int len = GetWindowTextLengthW(hwndedit) + 1;         
        char text[len];
        GetWindowText(hwndedit, text, len);
@@ -90,7 +90,8 @@ void on_paint(HWND hwnd){
       UpdateWindow(hwnd);
 }
 
-
+const int _hotkey_id =100;
+BOOL _hotkey_id_fail = FALSE;
 void on_create(HWND  hwnd){    
     HWND hwndedit = create_edit(L"cat",20, 20, 350, 40,hwnd, id_edit);        
     create_label(L"准备...",20, 60, 350, 40,hwnd, id_static);
@@ -99,6 +100,13 @@ void on_create(HWND  hwnd){
     SetWindowLong(hwndedit,GWL_WNDPROC,(long)MyEditProc);
     SetFocus(hwndedit);
     create_link(TRUE);
+    if (0==RegisterHotKey(hwnd, _hotkey_id,MOD_ALT, VK_SPACE)){
+      UnregisterHotKey(hwnd,_hotkey_id);
+      _log("RegisterHotKey failure!");
+      // *(&_hotkey_id) = 0;
+      _hotkey_id_fail = TRUE;
+      return;
+    }
     // create_button(L"退出",20, 80, 80, 25,hwnd, id_quit);      
 }
 // void setClipboard(char* text) {
@@ -114,6 +122,13 @@ void on_create(HWND  hwnd){
 //     CloseClipboard();
 // }
 
+BOOL is_change(char* new_,HWND hwndedit){
+    int len = GetWindowTextLengthW(hwndedit) + 1;         
+    char text[len];
+    memset(text,0,len);
+    GetWindowText(hwndedit, text, len);
+    return 0!=strcmp(new_,text);    
+}
 char* getClipboard() {
     OpenClipboard(NULL);
     HANDLE pText = GetClipboardData(CF_TEXT);
@@ -126,13 +141,18 @@ void on_activate(HWND  hwnd){
   char* content = getClipboard();
   HWND hwnd1 = get_rootwindow();
   HWND hwndedit = GetDlgItem(hwnd1,id_edit); 
-  SetWindowText(hwndedit,content);
-  on_enter();
+  if(is_change(content,hwndedit)){
+    SetWindowText(hwndedit,content);
+    on_enter();
+  }
 }
 
 void on_destroy(HWND  hwnd){  
+ // _log("exit!");
  hwnd_clear ();    
-  PostQuitMessage(0); 
+ if(!_hotkey_id_fail)
+  UnregisterHotKey(hwnd,_hotkey_id);    
+ PostQuitMessage(0); 
 }
 
 LRESULT CALLBACK WindowProc1(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) 
@@ -159,11 +179,32 @@ LRESULT CALLBACK WindowProc1(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
   return 0;
 } 
 
+void on_hotkey(HWND hwnd,int key){
+  switch(key)
+  {
+        case _hotkey_id:
+        {
+        // _log("WM_HOTKEY");
+          if (hwnd != GetActiveWindow()){
+            ShowWindow(hwnd,SW_SHOW);
+            SetForegroundWindow(hwnd);
+          }
+          else
+            ShowWindow(hwnd,SW_HIDE);   
+          break   ;
+        }
+  }
+}
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) 
 { 
   // _log("msg:%d", msg);
   switch (msg) 
   { 
+    case WM_HOTKEY:
+    {
+      on_hotkey(hwnd,LOWORD(wparam));
+      break;
+    }
   	case WM_CREATE:
   	{      
         on_create(hwnd);        
