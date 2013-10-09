@@ -69,8 +69,9 @@ INT_PTR CALLBACK DlgProc(HWND hwnd, UINT wm, WPARAM wParam, LPARAM lParam)
  switch (wm) {
  case WM_INITDIALOG: {
   create_label(L"准备...",20, 7, 350, 20,hwnd, 0);
-  create_button(L"OK...",20, 7+14, 350, 20,hwnd, 0);
-  create_button(L"case...",20, 7+14+14, 350, 20,hwnd, 0);
+  create_button(L"OK...",20, 7+20, 350, 20,hwnd, 0);
+  create_button(L"case...",20, 7+40, 350, 20,hwnd, 0);
+  create_button(L"case...",20, 7+60, 350, 20,hwnd, 0);
   return TRUE;
 }
  case WM_COMMAND:

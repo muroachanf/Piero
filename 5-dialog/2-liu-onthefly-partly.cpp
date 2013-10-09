@@ -70,9 +70,9 @@ INT_PTR CALLBACK DlgProc(HWND hwnd, UINT wm, WPARAM wParam, LPARAM lParam)
  switch (wm) {
  case WM_INITDIALOG: {
   // 为什么不按我指定的位置来呢？？？很费解。
-  create_label(L"准备...",20, 7, 50, 20,hwnd, 0);
-  create_button(L"OK...",120, 7+30, 50, 20,hwnd, 0);
-  hwnd_button = create_button(L"case...",20, 7+30+30, 50, 20,hwnd, 0);
+  // create_label(L"准备...",20, 7, 50, 20,hwnd, 0);
+  // create_button(L"OK...",120, 7+30, 50, 20,hwnd, 0);
+  // hwnd_button = create_button(L"case...",20, 7+30+30, 50, 20,hwnd, 0);
   return TRUE;
 }
  case WM_SIZE:{
