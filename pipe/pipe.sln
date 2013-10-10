@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pipe", "pipe.vcxproj", "{8BF81BE9-349E-4C72-BAAC-0BB911BDC6CE}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cc", "..\cc\cc.vcxproj", "{3DAF6675-3999-4C0A-BA9A-B171AE9411B4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8BF81BE9-349E-4C72-BAAC-0BB911BDC6CE}.Debug|Win32.ActiveCfg = Debug|Win32
+		{8BF81BE9-349E-4C72-BAAC-0BB911BDC6CE}.Debug|Win32.Build.0 = Debug|Win32
+		{8BF81BE9-349E-4C72-BAAC-0BB911BDC6CE}.Release|Win32.ActiveCfg = Release|Win32
+		{8BF81BE9-349E-4C72-BAAC-0BB911BDC6CE}.Release|Win32.Build.0 = Release|Win32
+		{3DAF6675-3999-4C0A-BA9A-B171AE9411B4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3DAF6675-3999-4C0A-BA9A-B171AE9411B4}.Debug|Win32.Build.0 = Debug|Win32
+		{3DAF6675-3999-4C0A-BA9A-B171AE9411B4}.Release|Win32.ActiveCfg = Release|Win32
+		{3DAF6675-3999-4C0A-BA9A-B171AE9411B4}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
