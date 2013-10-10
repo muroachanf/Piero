@@ -1,7 +1,7 @@
 // set path=%path%;c:\mingw\bin\
 // set prompt=%
-// g++.exe -mwindows -static 1-raymond-chen-onthefly.cpp
-// ref: http://blogs.msdn.com/b/oldnewthing/archive/2005/04/29/412577.aspx
+// g++.exe -mwindows -static 2-liu.cpp
+
 #include <windows.h>
 #include <vector>
 using namespace std;
@@ -34,54 +34,7 @@ public:
     vector<BYTE> v;
 };
 
-void set_font(HWND hwnd,int height){
-    HFONT hf;
-    HDC hdc;
-    long lfHeight;
-    
-    hdc = GetDC(NULL);
-    lfHeight = -MulDiv(height, GetDeviceCaps(hdc, LOGPIXELSY), 40);
-    ReleaseDC(NULL, hdc);    
-    hf = CreateFont(lfHeight, 0, 0, 0, 0, FALSE, 0, 0, 0, 0, 0, 0, 0, "Times New Roman");
-    SendMessage (hwnd, WM_SETFONT, WPARAM (hf), TRUE);
-}
-HWND create_edit(LPCWSTR text,int x,int y,int w,int h,HWND hwnd,int id){
-    HWND hwndedit = CreateWindowW(L"EDIT", text, WS_CHILD | WS_VISIBLE | SS_LEFT |WS_BORDER|WS_TABSTOP  ,
-            x,y,w,h,hwnd, (HMENU) id, NULL, NULL);
-    set_font(hwndedit,12);
-    return hwndedit;
-}
 
-HWND create_button(LPCWSTR text,int x,int y,int w,int h,HWND hwnd,int id){
-  return CreateWindowW(L"button", text, WS_CHILD | WS_VISIBLE | SS_LEFT|WS_TABSTOP ,
-            x,y,w,h,hwnd, (HMENU) id, NULL, NULL);
-}
-
-HWND create_label(LPCWSTR text,int x,int y,int w,int h,HWND hwnd,int id){
-  HWND hwndedit = CreateWindowW(L"STATIC", text, WS_CHILD | WS_VISIBLE | SS_LEFT,
-            x,y,w,h,hwnd, (HMENU) id, NULL, NULL);
-  set_font(hwndedit,8);
-  return hwndedit;
-}
-
-INT_PTR CALLBACK DlgProc(HWND hwnd, UINT wm, WPARAM wParam, LPARAM lParam)
-{
- switch (wm) {
- case WM_INITDIALOG: {
-  create_label(L"准备...",20, 7, 350, 20,hwnd, 0);
-  create_button(L"OK...",20, 7+20, 350, 20,hwnd, 0);
-  create_button(L"case...",20, 7+40, 350, 20,hwnd, 0);
-  create_button(L"case...",20, 7+60, 350, 20,hwnd, 0);
-  create_button(L"3...",20, 7+80, 350, 20,hwnd, 0);
-  return TRUE;
-}
- case WM_COMMAND:
-  // if (GET_WM_COMMAND_ID(wParam, lParam) == IDCANCEL) EndDialog(hwnd, 0);
-  EndDialog(hwnd, 0);
-  break;
- }
- return FALSE;
-}
 
 LONG point2logical(HDC hdc,LONG point){
   // The value 72 is significant because one inch contains 72 points. 
@@ -134,9 +87,13 @@ void add_child(DialogTemplate *tmp,const char *c_type,const wchar_t  *c_name ,WO
    tmp->WriteString(c_name); // text
    tmp->Write<WORD>(0); // no extra data 
 }
-BOOL Dialog(HWND hwnd, LPCWSTR pszMessage, LPCWSTR pszTitle,WORD X,WORD Y,WORD W,WORD H,DWORD STYLE,WORD c_count)
+
+
+BOOL dialog_modal(HWND hwnd,LPCWSTR pszTitle,WORD X,WORD Y,WORD W,WORD H,DWORD STYLE,DLGPROC proc)
 {
- BOOL fSuccess = FALSE;
+ WORD c_count = 0;
+
+ BOOL fSuccess = FALSE; 
  HDC hdc = GetDC(NULL);
  if (hdc) {
   NONCLIENTMETRICSW ncm = { sizeof(ncm) };
@@ -165,25 +122,10 @@ BOOL Dialog(HWND hwnd, LPCWSTR pszMessage, LPCWSTR pszTitle,WORD X,WORD Y,WORD W
    tmp.Write<BYTE>(ncm.lfMessageFont.lfItalic); // Italic
    tmp.Write<BYTE>(ncm.lfMessageFont.lfCharSet); // CharSet
    tmp.WriteString(ncm.lfMessageFont.lfFaceName);
- 
-   // add_child(&tmp,"static",pszMessage,7,7,200-14,80-7-14-7,WS_CHILD | WS_VISIBLE ,IDCANCEL);   
-   // add_child(&tmp,"button",L"1",75,59,50,14,WS_CHILD | WS_VISIBLE |WS_GROUP | WS_TABSTOP | BS_DEFPUSHBUTTON,IDCANCEL);
-   // add_child(&tmp,"button",L"2",75,73,50,14,WS_CHILD | WS_VISIBLE |WS_GROUP | WS_TABSTOP ,IDCANCEL);
-  
-   // Template is ready - go display it.
-   fSuccess = DialogBoxIndirect(g_hinst(), tmp.Template(),
-                                hwnd, DlgProc) >= 0;
+   fSuccess = DialogBoxIndirect(g_hinst(), tmp.Template(),hwnd, proc) >= 0;
   }
   ReleaseDC(NULL, hdc); // fixed 11 May
  }
  return fSuccess;
-}
-
-int WinMain(HINSTANCE hInst,HINSTANCE,LPSTR,int nCmdShow) 
-{
-  Dialog(NULL,
-   L"This is the text of a dynamically-generated dialog template. "
-   L"If Raymond had more time, this dialog would have looked prettier.",
-   L"Title of message box aa ",200,32,200,180,WS_CAPTION | WS_SYSMENU | DS_SETFONT | DS_MODALFRAME,0); 
 }
 
