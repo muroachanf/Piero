@@ -8,7 +8,7 @@ g++.exe -mconsole 2.c -static
 #include <windows.h> 
 #include <stdio.h> 
 
-int WinMain(HINSTANCE hInst,HINSTANCE,LPSTR,int nCmdShow) {
+void echo(char *s){
   SECURITY_ATTRIBUTES saAttr;
   STARTUPINFO sti;
   PROCESS_INFORMATION ps;
@@ -64,7 +64,7 @@ int WinMain(HINSTANCE hInst,HINSTANCE,LPSTR,int nCmdShow) {
                  0, 0, &sti, &ps);
 
   // Give some command to the interpreter
-  char *s = "echo Blah Blah Blah\n";
+  
   char buffer[512];
   DWORD d;
 
@@ -87,6 +87,11 @@ int WinMain(HINSTANCE hInst,HINSTANCE,LPSTR,int nCmdShow) {
   CloseHandle(  hStdInRead); CloseHandle(  hStdInWrite);
   CloseHandle( hStdOutRead); CloseHandle( hStdOutWrite);
   CloseHandle( hStdErrRead); CloseHandle( hStdErrWrite);
+}
+int WinMain(HINSTANCE hInst,HINSTANCE,LPSTR,int nCmdShow) {
+  // char *s = "echo Blah Blah Blah\n";
+  char *s = "dir c:\\windows \n";
+  echo(s);
 }
 int WinMain1(HINSTANCE hInst,HINSTANCE,LPSTR,int nCmdShow) 
 {
@@ -124,10 +129,11 @@ int WinMain1(HINSTANCE hInst,HINSTANCE,LPSTR,int nCmdShow)
     sti.dwY = 0;
     sti.dwXSize = 0;
     sti.dwYSize = 0;
+    // 设置一个 字符界面范围，看看more是否可以分批送来？ 哦，不行。
     sti.dwXCountChars = 80;
     sti.dwYCountChars = 20;
     sti.dwFillAttribute = 0;
-    sti.dwFlags = STARTF_USESTDHANDLES|STARTF_USECOUNTCHARS;
+    sti.dwFlags = STARTF_USESTDHANDLES|STARTF_USECOUNTCHARS;// 设置一个 字符界面范围，看看more是否可以分批送来？ 哦，不行。
     sti.wShowWindow = 0;
     sti.cbReserved2 = 0;
     sti.lpReserved2 = 0;
