@@ -1,11 +1,22 @@
 
 /*
+set path=%path%;c:\mingw\bin\
+set prompt=%
 g++.exe 8-enc.cpp -Wno-write-strings
 */
 #include <windows.h> 
 #include <stdio.h> 
 
-
+DWORD WINAPI thread_proc(LPVOID lpvParam){
+      HANDLE hStdOutRead =(HANDLE)lpvParam;
+      DWORD d;
+      char buffer[512];
+      while(1){
+        ReadFile( hStdOutRead, buffer, sizeof(buffer)-1, &d, 0);
+        buffer[d]='\0';
+        printf("%s", buffer);
+      }
+}
 class cmd{
   private:
     ULONG PipeSerialNumber ;
@@ -13,6 +24,7 @@ class cmd{
     HANDLE hStdOutRead, hStdOutWrite;
     HANDLE hStdErrRead, hStdErrWrite;
     PROCESS_INFORMATION ps;
+    HANDLE  listen_thread_handle;
   public :
   void fork_cmd(){
     // Create three pipes STDIN, STDOUT, STDERR    
@@ -43,14 +55,15 @@ class cmd{
     sti.hStdError = hStdErrWrite;
     // Create the process.
     CreateProcess( 0, "cmd.exe", 0, 0, TRUE,
-            NORMAL_PRIORITY_CLASS | CREATE_NO_WINDOW,
+            // NORMAL_PRIORITY_CLASS | CREATE_NO_WINDOW,
+            NORMAL_PRIORITY_CLASS,
             0, 0, &sti, &ps);
   }
   void send(const char *s){
     DWORD d;
     WriteFile( hStdInWrite, s, strlen(s), &d, 0);
   }
-  void rec(){
+  void rec_blocked(){
       DWORD d;
       char buffer[512];
       ReadFile( hStdOutRead, buffer, sizeof(buffer)-1, &d, 0);
@@ -59,29 +72,55 @@ class cmd{
   }
   void wait_rec_forever(){
       for( ; ;){
-        rec();        
+        rec_blocked();        
         // scanf("%s",buffer);
       }
+  }  
+  void wait_rec_forever1(){
+        DWORD  dwThreadId = 0; 
+        HANDLE hThread = CreateThread( 
+            NULL,              // no security attribute 
+            0,                 // default stack size 
+            ::thread_proc,    // thread proc
+            (LPVOID) hStdOutRead,    // thread parameter 
+            0,                 // not suspended 
+            &dwThreadId);      // returns thread ID 
+
+         if (hThread == NULL) 
+         {
+            printf("CreateThread failed, GLE=%d.\n", GetLastError()); 
+            return ;
+         }
+         else CloseHandle(hThread); 
+         listen_thread_handle = hThread;
   }
-  void echo(const char *s){
+  void echo(){
     fork_cmd();
-    char buff[1024]="dir \n";    
+    wait_rec_forever1();
+    char buff[1024]="";    
     // const char*buff;
-    while(1){
-       scanf("%s",buff);
-      // buff = s;
+    // send(buff);
+    // send("\n");
+    
+    while(1){    
+      // printf("()");  
+      // scanf("%s",buff);      
+      gets(buff);      
+      if (strcmp(buff,"quit")==0)
+        break;      
+      // printf("command is :%s\n",buff);
       send(buff);
       send("\n");
-      wait_rec_forever();
-      if (strcmp(buff,"exit")==0)
-        break;
-      break;
+      // wait_rec_forever();
+      
+      
     }
-    // send("exit\n");
+    send("exit\n");
     destroy_cmd();    
   }
   void destroy_cmd (){
     // Close all handles
+    CloseHandle( listen_thread_handle);
     CloseHandle( ps.hProcess);
     CloseHandle( ps.hThread);
     CloseHandle(  hStdInRead); CloseHandle(  hStdInWrite);
@@ -180,7 +219,7 @@ class cmd{
 
 int WinMain(HINSTANCE hInst,HINSTANCE,LPSTR,int nCmdShow) {
   // char *s = "echo Blah Blah Blah\n";
-  char *s = "echo 1234 \n";
+  // char *s = "echo 1234 \n";
   cmd c;
-  c.echo(s);
+  c.echo();
 }
