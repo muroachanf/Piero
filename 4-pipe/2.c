@@ -1,8 +1,29 @@
 
+
+// BOOL WINAPI ReadFileEx(
+//   _In_       HANDLE hFile,
+//   _Out_opt_  LPVOID lpBuffer,
+//   _In_       DWORD nNumberOfBytesToRead,
+//   _Inout_    LPOVERLAPPED lpOverlapped,
+//   _In_       LPOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine
+// );
+
+// BOOL WINAPI ReadFile(
+//   _In_         HANDLE hFile,
+//   _Out_        LPVOID lpBuffer,
+//   _In_         DWORD nNumberOfBytesToRead,
+//   _Out_opt_    LPDWORD lpNumberOfBytesRead,
+//   _Inout_opt_  LPOVERLAPPED lpOverlapped
+// );
+
 /*
 ref:
 Programmatically controlling another application - redirecting input and output
 http://www.bolekvrany.cz/index.php?lang=en&what=articles&subsection=control_another_app
+cd "My documents\github\piero"
+set path=%path%;c:\mingw\bin\
+set prompt=%
+
 g++.exe -mconsole 2.c -static 
 */
 #include <windows.h> 
@@ -75,7 +96,7 @@ void echo(char *s){
   ReadFile( hStdOutRead, buffer, sizeof(buffer)-1, &d, 0);
   buffer[d]='\0';
   // Display the response
-  ::MessageBox( 0, buffer, "Result", MB_OK);
+  MessageBox( 0, buffer, "Result", MB_OK);
 
   // Instruct the interpreter to quit
   s = "exit\n";
