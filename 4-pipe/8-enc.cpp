@@ -50,25 +50,34 @@ class cmd{
     DWORD d;
     WriteFile( hStdInWrite, s, strlen(s), &d, 0);
   }
-  void rec(char *buffer){
+  void rec(){
       DWORD d;
+      char buffer[512];
       ReadFile( hStdOutRead, buffer, sizeof(buffer)-1, &d, 0);
       buffer[d]='\0';
+      printf("%s", buffer);
   }
   void wait_rec_forever(){
       for( ; ;){
-        char buffer[512];
-        rec(buffer);
-        printf("%s", buffer);
+        rec();        
         // scanf("%s",buffer);
       }
   }
   void echo(const char *s){
     fork_cmd();
-    send(s);
-    wait_rec_forever();
-    // Instruct the interpreter to quit    
-    send("exit\n");
+    char buff[1024]="dir \n";    
+    // const char*buff;
+    while(1){
+       scanf("%s",buff);
+      // buff = s;
+      send(buff);
+      send("\n");
+      wait_rec_forever();
+      if (strcmp(buff,"exit")==0)
+        break;
+      break;
+    }
+    // send("exit\n");
     destroy_cmd();    
   }
   void destroy_cmd (){
