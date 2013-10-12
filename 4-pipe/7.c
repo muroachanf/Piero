@@ -196,9 +196,8 @@ void echo(char *s){
   for( ; ;){
     ReadFile( hStdOutRead, buffer, sizeof(buffer)-1, &d, 0);
     buffer[d]='\0';
-    // Display the response
     printf("%s", buffer);
-    // MessageBox( 0, buffer, "Result", MB_OK);
+    // scanf("%s",buffer);
   }
   // Instruct the interpreter to quit
   s = "exit\n";
