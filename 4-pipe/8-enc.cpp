@@ -52,7 +52,8 @@ class cmd{
     // bind stdin ,stdout
     sti.hStdInput = hStdInRead;
     sti.hStdOutput = hStdOutWrite;
-    sti.hStdError = hStdErrWrite;
+    // sti.hStdError = hStdErrWrite;
+    sti.hStdError = hStdOutWrite;
     // Create the process.
     CreateProcess( 0, "cmd.exe", 0, 0, TRUE,
             // NORMAL_PRIORITY_CLASS | CREATE_NO_WINDOW,
