@@ -54,6 +54,7 @@ class cmd{
   public :
   cmd(){
     ctx = new context ();
+    // context_ *tx = new context ();
   }
   ~cmd(){
     delete ctx;
