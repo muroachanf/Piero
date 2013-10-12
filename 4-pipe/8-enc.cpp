@@ -52,12 +52,15 @@ class cmd{
     HANDLE  listen_thread_handle;
     context_ *ctx ;
   public :
+  void set_context(context_ *ctx_){
+    ctx = ctx_ ;
+  }
   cmd(){
-    ctx = new context ();
-    // context_ *tx = new context ();
+    
+    // context_ *ctx = new context ();
   }
   ~cmd(){
-    delete ctx;
+    
   }
   void fork_cmd(){
     // Create three pipes STDIN, STDOUT, STDERR    
@@ -128,30 +131,6 @@ class cmd{
          }
          else CloseHandle(hThread); 
          listen_thread_handle = hThread;
-  }
-  void echo(){
-    fork_cmd();
-    wait_rec_forever1();
-    char buff[1024]="";    
-    // const char*buff;
-    // send(buff);
-    // send("\n");
-    
-    while(1){    
-      // printf("()");  
-      // scanf("%s",buff);      
-      gets(buff);      
-      if (strcmp(buff,"quit")==0)
-        break;      
-      // printf("command is :%s\n",buff);
-      send(buff);
-      send("\n");
-      // wait_rec_forever();
-      
-      
-    }
-    send("exit\n");
-    destroy_cmd();    
   }
   void destroy_cmd (){
     // Close all handles
@@ -246,15 +225,38 @@ class cmd{
       *lpWritePipe = WritePipeHandle;
       return( TRUE );
   }
+  void echo(){
+    fork_cmd();
+    wait_rec_forever1();
+    char buff[1024]="";    
+    // const char*buff;
+    // send(buff);
+    // send("\n");
+    
+    while(1){    
+      // printf("()");  
+      // scanf("%s",buff);      
+      gets(buff);      
+      if (strcmp(buff,"quit")==0)
+        break;      
+      // printf("command is :%s\n",buff);
+      send(buff);
+      send("\n");
+      // wait_rec_forever();
+      
+      
+    }
+    send("exit\n");
+    destroy_cmd();    
+  }  
 };
-
-
-  
-
 
 int WinMain(HINSTANCE hInst,HINSTANCE,LPSTR,int nCmdShow) {
   // char *s = "echo Blah Blah Blah\n";
   // char *s = "echo 1234 \n";
   cmd c;
+  context *ctx = new context ();
+  c.set_context(ctx);
   c.echo();
+  delete ctx;
 }
