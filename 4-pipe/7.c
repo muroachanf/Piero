@@ -193,7 +193,7 @@ void echo(char *s){
   // Give it some time to initialize and process the command
   // Sleep(1000);
   // Read response
-  for(;;){
+  for( ; ;){
     ReadFile( hStdOutRead, buffer, sizeof(buffer)-1, &d, 0);
     buffer[d]='\0';
     // Display the response
