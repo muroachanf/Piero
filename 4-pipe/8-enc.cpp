@@ -6,15 +6,40 @@ g++.exe 8-enc.cpp -Wno-write-strings
 */
 #include <windows.h> 
 #include <stdio.h> 
+class context_{
+public:
+   virtual HANDLE get_stdout_handle()=0;
+   virtual void set_stdout_handle(HANDLE a)=0;
+   virtual void on_data(char *buffer)=0;
+};
+
+class context :public context_{
+  private:
+    HANDLE h;
+  public:
+    HANDLE get_stdout_handle()  {
+      return h;
+    }
+    void set_stdout_handle(HANDLE a)  {
+      h =a ;
+    }
+    void on_data(char *buffer) {
+      printf("%s", buffer);
+      delete buffer;
+    }
+};
 
 DWORD WINAPI thread_proc(LPVOID lpvParam){
-      HANDLE hStdOutRead =(HANDLE)lpvParam;
+      // HANDLE hStdOutRead =(HANDLE)lpvParam;
+      context *ctx = (context*)lpvParam ;
+      HANDLE hStdOutRead =ctx->get_stdout_handle();
       DWORD d;
       char buffer[512];
       while(1){
         ReadFile( hStdOutRead, buffer, sizeof(buffer)-1, &d, 0);
         buffer[d]='\0';
-        printf("%s", buffer);
+        ctx->on_data(buffer);
+        // printf("%s", buffer);
       }
 }
 class cmd{
@@ -25,7 +50,14 @@ class cmd{
     HANDLE hStdErrRead, hStdErrWrite;
     PROCESS_INFORMATION ps;
     HANDLE  listen_thread_handle;
+    context_ *ctx ;
   public :
+  cmd(){
+    ctx = new context ();
+  }
+  ~cmd(){
+    delete ctx;
+  }
   void fork_cmd(){
     // Create three pipes STDIN, STDOUT, STDERR    
     create_pipe_overlapped(  &hStdInRead,  &hStdInWrite);
@@ -78,12 +110,13 @@ class cmd{
       }
   }  
   void wait_rec_forever1(){
+        ctx->set_stdout_handle (hStdOutRead);
         DWORD  dwThreadId = 0; 
         HANDLE hThread = CreateThread( 
             NULL,              // no security attribute 
             0,                 // default stack size 
             ::thread_proc,    // thread proc
-            (LPVOID) hStdOutRead,    // thread parameter 
+            (LPVOID) ctx,    // thread parameter 
             0,                 // not suspended 
             &dwThreadId);      // returns thread ID 
 
