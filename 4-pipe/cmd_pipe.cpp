@@ -124,7 +124,7 @@ class cmd{
       sti.hStdError = hStdErrWrite;
       // sti.hStdError = hStdOutWrite;
       // Create the process.
-      char cmd[]="cmd.exe";
+      char cmd[]="cmd.exe /k ";
       CreateProcess( 0, cmd, 0, 0, TRUE,
               // NORMAL_PRIORITY_CLASS | CREATE_NO_WINDOW,
               NORMAL_PRIORITY_CLASS,
