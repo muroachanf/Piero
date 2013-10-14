@@ -15,8 +15,8 @@ int main(int argc, char *argv[]) {
   for(int i= 1;i<c;i++){
     printf("%d\n",i);
     if (i % 50 ==0)  {        
-      printf("------------more?----------\n");
-      fflush(0);
+      printf("------------more1?----------\n");
+      // fflush(0);
       scanf("%d",&t);
     }
   }
