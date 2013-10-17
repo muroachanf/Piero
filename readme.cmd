@@ -1,0 +1,1 @@
+cmd /q/K   "call set path=^%path^%;c:\mingw\bin&set prompt=~& cd %homepath%\My Documents\GitHub\piero"
