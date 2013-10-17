@@ -3,8 +3,11 @@
 #include "point.h"
 
 int main(){
-	point *pp = point_new(3,4);
-	printf("%d", point_distance(pp));
-	point_free(pp);
+	point *p1 = point_new(3,4);
+	point *p2 = point_new(6,9);
+	// printf("\n");
+	printf("%d\n", point_distance(p1,p2));
+	point_free(p1);
+	point_free(p2);
 	
 }
