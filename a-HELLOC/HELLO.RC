@@ -1,0 +1,7 @@
+#include "windows.h"
+
+appicon ICON hello.ico
+
+HELLOMENU MENU { 
+	MENUITEM "E&xit!", IDCANCEL
+}
