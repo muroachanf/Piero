@@ -9,51 +9,57 @@
 #include <windows.h>
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp);
+class app{
+	public :
+	int PASCAL WinMain(HINSTANCE hinst, HINSTANCE pinst, LPSTR cmdline, int show)
+	{
+		HWND hwnd;
+		MSG msg;
 
+		if (pinst==NULL) {
+			WNDCLASS wndcls;
+
+			wndcls.style = CS_HREDRAW | CS_VREDRAW;
+			wndcls.lpfnWndProc = WndProc;
+			wndcls.cbClsExtra = 0;
+			wndcls.cbWndExtra = 0;
+			wndcls.hInstance = hinst;
+			wndcls.hIcon = LoadIcon(hinst, "appicon");
+			wndcls.hCursor = LoadCursor(NULL, IDC_ARROW);
+			wndcls.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
+			wndcls.lpszMenuName = "HELLOMENU";
+			wndcls.lpszClassName = "HELLOWIN";
+
+			RegisterClass(&wndcls);
+		}
+
+		hwnd = CreateWindow("HELLOWIN",		 /* class name */
+			"HELLO--The C version",				 /* title */
+			WS_OVERLAPPEDWINDOW,					 /* window style */
+			CW_USEDEFAULT,							 /* x position */
+			CW_USEDEFAULT,							 /* y position */
+			CW_USEDEFAULT,							 /* width */
+			CW_USEDEFAULT,							 /* height */
+			NULL,										 /* parent */
+			NULL,										 /* menu */
+			hinst,									 /* module instance */
+			NULL);									 /* create param */
+
+		ShowWindow(hwnd, show);
+		UpdateWindow(hwnd);
+
+		while (GetMessage(&msg, NULL, 0, 0)) {
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+		return msg.wParam;
+	}
+};
 int PASCAL WinMain(HINSTANCE hinst, HINSTANCE pinst, LPSTR cmdline, int show)
 {
-	HWND hwnd;
-	MSG msg;
-
-	if (pinst==NULL) {
-		WNDCLASS wndcls;
-
-		wndcls.style = CS_HREDRAW | CS_VREDRAW;
-		wndcls.lpfnWndProc = WndProc;
-		wndcls.cbClsExtra = 0;
-		wndcls.cbWndExtra = 0;
-		wndcls.hInstance = hinst;
-		wndcls.hIcon = LoadIcon(hinst, "appicon");
-		wndcls.hCursor = LoadCursor(NULL, IDC_ARROW);
-		wndcls.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
-		wndcls.lpszMenuName = "HELLOMENU";
-		wndcls.lpszClassName = "HELLOWIN";
-
-		RegisterClass(&wndcls);
-	}
-
-	hwnd = CreateWindow("HELLOWIN",		 /* class name */
-		"HELLO--The C version",				 /* title */
-		WS_OVERLAPPEDWINDOW,					 /* window style */
-		CW_USEDEFAULT,							 /* x position */
-		CW_USEDEFAULT,							 /* y position */
-		CW_USEDEFAULT,							 /* width */
-		CW_USEDEFAULT,							 /* height */
-		NULL,										 /* parent */
-		NULL,										 /* menu */
-		hinst,									 /* module instance */
-		NULL);									 /* create param */
-
-	ShowWindow(hwnd, show);
-	UpdateWindow(hwnd);
-
-	while (GetMessage(&msg, NULL, 0, 0)) {
-		TranslateMessage(&msg);
-		DispatchMessage(&msg);
-	}
-	return msg.wParam;
+	app a ;
+	return a.WinMain(hinst,pinst,cmdline,show);
 }
-
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 {
 	PAINTSTRUCT ps;
