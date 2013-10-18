@@ -11,12 +11,12 @@
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp);
 class app{
 	public :
-	int PASCAL WinMain(HINSTANCE hinst, HINSTANCE pinst, LPSTR cmdline, int show)
+	int PASCAL WinMain(HINSTANCE hinst, LPSTR cmdline, int show)
 	{
 		HWND hwnd;
 		MSG msg;
 
-		if (pinst==NULL) {
+		{
 			WNDCLASS wndcls;
 
 			wndcls.style = CS_HREDRAW | CS_VREDRAW;
@@ -55,10 +55,10 @@ class app{
 		return msg.wParam;
 	}
 };
-int PASCAL WinMain(HINSTANCE hinst, HINSTANCE pinst, LPSTR cmdline, int show)
+int PASCAL WinMain(HINSTANCE hinst, HINSTANCE , LPSTR cmdline, int show)
 {
 	app a ;
-	return a.WinMain(hinst,pinst,cmdline,show);
+	return a.WinMain(hinst,cmdline,show);
 }
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 {
