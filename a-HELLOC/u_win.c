@@ -5,6 +5,11 @@ class win{
 	HINSTANCE pinst;
 	int show;
 	int x,y,w,h;
+  protected:
+  	virtual LRESULT on_paint(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
+  	{
+		return 0;
+  	}
   public:
   	win(HINSTANCE hinsta, HINSTANCE pinsta,int showa){
   		winproc = WndProc ;
@@ -17,7 +22,7 @@ class win{
   		y = y_;
   		w = w_;
   		h = h_;
-  	}
+  	}  	
   	LRESULT CALLBACK _proc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp){
   		// ::MessageBox(NULL,"this","",0);
   		PAINTSTRUCT ps;
@@ -26,13 +31,7 @@ class win{
 
 		switch(msg) {
 		case WM_PAINT:
-			hdc = BeginPaint(hwnd, &ps);
-			GetClientRect(hwnd, &rect);
-			DrawText(hdc, "Hello, world.", -1, &rect,
-				DT_SINGLELINE | DT_CENTER | DT_VCENTER);
-			EndPaint(hwnd, &ps);
-			return 0;
-
+			return on_paint(hwnd,msg,wp,lp);
 		case WM_COMMAND:
 			switch (wp) {
 			case IDCANCEL:
