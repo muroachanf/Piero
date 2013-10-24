@@ -1,0 +1,4 @@
+
+2013:10:2414:45:25 before create [u_win.cpp][line: 35] 
+2013:10:2414:48:12 before create [u_win.cpp][line: 36] 
+2013:10:2414:57:45 hwnd:3670812 [u_win.cpp][line: 132] 
