@@ -1,13 +1,6 @@
-//////////////////////////////////////////////////////////
-// WINDOWS++ CLASS LIBRARY.  Copyright 1992,1996 Paul DiLascia.
-// FILE: HELLO.C
-//
-/******************************************************/
-/* This is the basic C version of the hello program.  */
-/******************************************************/
-
 #include <windows.h>
 #include "u_win.cpp"
+#include <stdio.h>
 
 class dictwin:public win{
 public:
@@ -27,12 +20,12 @@ public:
 		EndPaint(hwnd, &ps);
 		return 0;
   	}
- //  	LRESULT on_crt(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
- //  	{		  		
- //  		_log("into create");
- //  		// create_label(L"准备...",20, 60, 350, 40,hwnd, 1);
-	//   	return 0;
-	// }
+  	LRESULT on_crt(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
+  	{		  		
+  		_log("into create");
+  		create_label(L"准备...",20, 60, 350, 40,hwnd, 1);
+	  	return 0;
+	}
 	HWND create_label(LPCWSTR text,int x,int y,int w,int h,HWND hwnd,int id){
 	 	HWND hwndedit = CreateWindowW(L"STATIC", text, WS_CHILD | WS_VISIBLE | SS_LEFT,
 	            x,y,w,h,hwnd, (HMENU) id, NULL, NULL);
@@ -40,6 +33,8 @@ public:
 	  return hwndedit;
 	}
 };
+
+
 int PASCAL WinMain(HINSTANCE hinst, HINSTANCE pinst, LPSTR cmdline, int show)
 {
 	dictwin *w = new dictwin(hinst, pinst,show);

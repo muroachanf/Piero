@@ -11,7 +11,7 @@ class win{
 	int x,y,w,h;
   protected:
   	virtual LRESULT on_paint(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)=0;
-  	virtual LRESULT on_crt(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp){
+  	LRESULT on_crt(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp){
   		_log("base into ");
   		return 0;
   	}
@@ -34,8 +34,11 @@ class win{
 		case WM_CREATE:
 		{
 			_log("before create");
-			assert(this);
-			this->on_crt(hwnd,msg,wp,lp);
+			// assert(this);
+			// call 0x1234(this, 1,2);
+			// var test = this[100];
+			// call test(this, 1, 2)
+			on_crt(hwnd,msg,wp,lp);
 			_log("after create");
 			break;
 		}
@@ -64,6 +67,7 @@ class win{
 		return 0;
   	}
   	void main(){
+  		_log("win.main");
   		HWND hwnd;
   		if (pinst==NULL) 
 		{
@@ -82,7 +86,7 @@ class win{
 
 			RegisterClass(&wndcls);
 		}
-
+		_log("win.main.CreateWindow");
 		hwnd = CreateWindow("HELLOWIN",		 /* class name */
 			"HELLO--The C version",				 /* title */
 			WS_OVERLAPPEDWINDOW,					 /* window style */
@@ -91,10 +95,13 @@ class win{
 			NULL,										 /* parent */
 			NULL,										 /* menu */
 			hinst,									 /* module instance */
-			NULL);									 /* create param */
+			this);									 /* create param */
 		// bind win -- hwnd 
-	    assert(this);
-		SetWindowLong(hwnd,GWL_USERDATA,(LONG)this);
+		// _log("win.main.CreateWindow.after");
+	 //    assert(this);
+	 //    _log("set hwnd:%d",hwnd);
+		// SetWindowLong(hwnd,GWL_USERDATA,(LONG)this);
+		// SetWindowLong(hwnd,GWL_USERDATA,(LONG)1999);
 		ShowWindow(hwnd, show);
 		UpdateWindow(hwnd);
   	}
@@ -120,6 +127,7 @@ class app{
 	int PASCAL main(HINSTANCE hinst, LPSTR cmdline, int show)
 	{		
 		assert(w);
+		_log("app.main");
 		w->main();
 		return loop();
 	}
@@ -128,11 +136,18 @@ class app{
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 {
 
-	assert(hwnd);
-	_log("hwnd:%d",hwnd);
+	// _log("get hwnd:%d",hwnd);
+	if (msg == WM_CREATE){
+		// _log("mount this with hwnd:%d",hwnd);
+		LONG this_ = (LONG) (((LPCREATESTRUCT) lp)->lpCreateParams) ;
+		SetWindowLong(hwnd,GWL_USERDATA,this_);
+	}
 	long v = GetWindowLong(hwnd,GWL_USERDATA);
-	assert(v);
-	win *p = (win*)GetWindowLong(hwnd,GWL_USERDATA);
-	assert(p);
+	// assert(v);
+	// _log("v:%d",v);
+	win *p = (win*)v;
+	// assert(p);	
 	return p->_proc(hwnd,msg,wp,lp);	
 }
+
+
