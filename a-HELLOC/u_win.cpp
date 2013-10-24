@@ -1,3 +1,7 @@
+#include "logger.h"
+#include <windows.h>
+#include <assert.h>
+
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp);
 class win{
 	WNDPROC winproc;
@@ -6,11 +10,13 @@ class win{
 	int show;
 	int x,y,w,h;
   protected:
-  	virtual LRESULT on_paint(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
-  	{
-		return 0;
+  	virtual LRESULT on_paint(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)=0;
+  	virtual LRESULT on_crt(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp){
+  		_log("base into ");
+  		return 0;
   	}
   public:
+  	
   	win(HINSTANCE hinsta, HINSTANCE pinsta,int showa){
   		winproc = WndProc ;
   		hinst = hinsta ;
@@ -24,27 +30,38 @@ class win{
   		h = h_;
   	}  	
   	LRESULT CALLBACK _proc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp){
-  		// ::MessageBox(NULL,"this","",0);
-  		PAINTSTRUCT ps;
-		HDC hdc;
-		RECT rect;
-
 		switch(msg) {
+		case WM_CREATE:
+		{
+			_log("before create");
+			assert(this);
+			this->on_crt(hwnd,msg,wp,lp);
+			_log("after create");
+			break;
+		}
 		case WM_PAINT:
-			return on_paint(hwnd,msg,wp,lp);
+		{
+			on_paint(hwnd,msg,wp,lp);
+			break;					
+		}
 		case WM_COMMAND:
+		{
 			switch (wp) {
 			case IDCANCEL:
 				SendMessage(hwnd, WM_CLOSE, 0, 0);
 				break;
 			}
-			return 0;
-
-		case WM_DESTROY:
-			PostQuitMessage(0);
-			return 0;
+			break;
 		}
-		return DefWindowProc(hwnd, msg, wp, lp);
+		case WM_DESTROY:
+		{
+			PostQuitMessage(0);			
+			break;
+		}
+		default :
+			return DefWindowProc(hwnd, msg, wp, lp);
+		}
+		return 0;
   	}
   	void main(){
   		HWND hwnd;
@@ -76,6 +93,7 @@ class win{
 			hinst,									 /* module instance */
 			NULL);									 /* create param */
 		// bind win -- hwnd 
+	    assert(this);
 		SetWindowLong(hwnd,GWL_USERDATA,(LONG)this);
 		ShowWindow(hwnd, show);
 		UpdateWindow(hwnd);
@@ -101,6 +119,7 @@ class app{
 	}
 	int PASCAL main(HINSTANCE hinst, LPSTR cmdline, int show)
 	{		
+		assert(w);
 		w->main();
 		return loop();
 	}
@@ -108,5 +127,12 @@ class app{
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 {
-	return ((win*)GetWindowLong(hwnd,GWL_USERDATA))->_proc(hwnd,msg,wp,lp);	
+
+	assert(hwnd);
+	_log("hwnd:%d",hwnd);
+	long v = GetWindowLong(hwnd,GWL_USERDATA);
+	assert(v);
+	win *p = (win*)GetWindowLong(hwnd,GWL_USERDATA);
+	assert(p);
+	return p->_proc(hwnd,msg,wp,lp);	
 }

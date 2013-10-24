@@ -7,14 +7,15 @@
 /******************************************************/
 
 #include <windows.h>
-#include "u_win.c"
+#include "u_win.cpp"
 
 class dictwin:public win{
 public:
 	dictwin(HINSTANCE hinsta, HINSTANCE pinsta,int showa):win(hinsta,pinsta,showa){
   		
   	}
-  LRESULT on_paint(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
+
+   LRESULT on_paint(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
   	{
   		PAINTSTRUCT ps;
 		HDC hdc;
@@ -26,10 +27,22 @@ public:
 		EndPaint(hwnd, &ps);
 		return 0;
   	}
+ //  	LRESULT on_crt(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
+ //  	{		  		
+ //  		_log("into create");
+ //  		// create_label(L"准备...",20, 60, 350, 40,hwnd, 1);
+	//   	return 0;
+	// }
+	HWND create_label(LPCWSTR text,int x,int y,int w,int h,HWND hwnd,int id){
+	 	HWND hwndedit = CreateWindowW(L"STATIC", text, WS_CHILD | WS_VISIBLE | SS_LEFT,
+	            x,y,w,h,hwnd, (HMENU) id, NULL, NULL);
+	  // set_font(hwndedit,8);
+	  return hwndedit;
+	}
 };
 int PASCAL WinMain(HINSTANCE hinst, HINSTANCE pinst, LPSTR cmdline, int show)
 {
-	win *w = new dictwin(hinst, pinst,show);
+	dictwin *w = new dictwin(hinst, pinst,show);
 	// w->set_rect(CW_USEDEFAULT,CW_USEDEFAULT,CW_USEDEFAULT,CW_USEDEFAULT);
 	w->set_rect(100,100,300,200);
 	app a (w);
